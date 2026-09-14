@@ -104,11 +104,6 @@ def init_db():
         pass
 
     try:
-        c.execute("ALTER TABLE employee_payroll_records ADD COLUMN month_key TEXT")
-    except:
-        pass
-
-    try:
         c.execute('''
             UPDATE monthly_sheets 
             SET month_key = printf('%04d-%02d', year, month)
@@ -122,6 +117,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS employee_payroll_records (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             sheet_id INTEGER,
+            month_key TEXT,
             month_name TEXT,
             emp_id TEXT,
             name TEXT,
@@ -149,9 +145,12 @@ def init_db():
         )
     ''')
 
-    for col in ["total_advance", "remaining_advance"]:
+    for col in ["month_key", "total_advance", "remaining_advance"]:
         try:
-            c.execute(f"ALTER TABLE employee_payroll_records ADD COLUMN {col} REAL DEFAULT 0.0")
+            if col == "month_key":
+                c.execute("ALTER TABLE employee_payroll_records ADD COLUMN month_key TEXT")
+            else:
+                c.execute(f"ALTER TABLE employee_payroll_records ADD COLUMN {col} REAL DEFAULT 0.0")
         except:
             pass
 
