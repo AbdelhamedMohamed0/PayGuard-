@@ -1,0 +1,4 @@
+flask>=2.2.0
+pywebview>=4.0.0
+openpyxl>=3.0.0
+pyinstaller>=5.0.0

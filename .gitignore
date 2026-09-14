@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.spec.bak
+
+# PyArmor & PyInstaller build outputs
+.pyarmor/
+build/
+dist/
+*.patched.spec
+
+# Local SQLite databases
+*.db
+*.sqlite3
+
+# Temporary exported reports & test files
+test_export*.xlsx
+تقارير_الموظفين_PDF/
+
+# Distribution executable folder (binary artifacts)
+النسخة_المشفرة_للعميل/*.exe
+
+# Environment & IDE
+.env
+venv/
+env/
+.vscode/
+.idea/
+*.log

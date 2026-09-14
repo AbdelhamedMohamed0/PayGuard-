@@ -1,0 +1,2687 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayGuard - Smart Payroll & Attendance System</title>
+    <!-- خطوط عربية ولاتينية عالية النقاء -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pg-navy-deep: #070d18;
+            --pg-navy: #0f172a;
+            --pg-navy-card: #1e293b;
+            --pg-slate-50: #f8fafc;
+            --pg-slate-100: #f1f5f9;
+            --pg-slate-200: #e2e8f0;
+            --pg-slate-300: #cbd5e1;
+            --pg-slate-400: #94a3b8;
+            --pg-slate-500: #64748b;
+            --pg-slate-600: #475569;
+            --pg-slate-700: #334155;
+            --pg-slate-800: #1e293b;
+            --pg-slate-900: #0f172a;
+            
+            --pg-primary: #2563eb;
+            --pg-primary-hover: #1d4ed8;
+            --pg-primary-light: #eff6ff;
+            
+            --pg-emerald: #10b981;
+            --pg-emerald-deep: #059669;
+            --pg-emerald-bg: #ecfdf5;
+            --pg-emerald-border: #a7f3d0;
+            
+            --pg-amber: #f59e0b;
+            --pg-amber-bg: #fffbeb;
+            --pg-amber-border: #fde68a;
+            
+            --pg-rose: #ef4444;
+            --pg-rose-bg: #fef2f2;
+            --pg-rose-border: #fecaca;
+            
+            --pg-cyan: #06b6d4;
+            --pg-cyan-bg: #ecfeff;
+            
+            --pg-radius-sm: 8px;
+            --pg-radius-md: 12px;
+            --pg-radius-lg: 16px;
+            --pg-radius-xl: 22px;
+            
+            --pg-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --pg-shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+            --pg-shadow-float: 0 20px 35px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
+            --pg-shadow-glow: 0 0 25px rgba(16, 185, 129, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        html[dir="ltr"] * {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .mono-num {
+            font-family: 'JetBrains Mono', monospace, 'Cairo';
+            font-variant-numeric: tabular-nums;
+        }
+
+        input, textarea, select {
+            -webkit-user-select: auto;
+            user-select: auto;
+        }
+
+        body {
+            background-color: var(--pg-slate-50);
+            color: var(--pg-slate-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.5;
+            background-image: radial-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* -------------------------------------------------------------
+           HEADER - الترويسة العلوية الفخمة بنظام PayGuard
+        ------------------------------------------------------------- */
+        .pg-header {
+            background: linear-gradient(135deg, #090e17 0%, #0f1a2e 50%, #132238 100%);
+            color: #ffffff;
+            padding: 16px 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .pg-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+        }
+
+        .pg-logo-shield {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #2563eb 0%, #10b981 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .pg-logo-shield::before {
+            content: "";
+            position: absolute;
+            inset: 1px;
+            background: #0f172a;
+            border-radius: 11px;
+            z-index: 1;
+        }
+
+        .pg-logo-shield svg {
+            position: relative;
+            z-index: 2;
+            width: 26px;
+            height: 26px;
+            color: #38bdf8;
+        }
+
+        .pg-brand-text h1 {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pg-brand-text h1 span.badge-pro {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            -webkit-text-fill-color: #ffffff;
+            padding: 2px 7px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .pg-brand-text p {
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .pg-header-center {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .system-status-pill {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #34d399;
+            letter-spacing: 0.3px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #10b981;
+            box-shadow: 0 0 10px #10b981;
+            animation: pulseDot 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.2); }
+        }
+
+        .pg-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* قائمة الأرشيف التاريخي في الهيدر */
+        .history-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 5px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.2s;
+        }
+
+        .history-wrap:hover {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .history-wrap label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .history-select {
+            background: #090e17;
+            color: #f1f5f9;
+            border: 1px solid #334155;
+            padding: 5px 10px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .history-select:focus {
+            border-color: #3b82f6;
+        }
+
+        /* زر تبديل اللغة */
+        .btn-lang-toggle {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 7px 14px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-lang-toggle:hover {
+            background: rgba(255, 255, 255, 0.16);
+            border-color: #38bdf8;
+            color: #38bdf8;
+            transform: translateY(-1px);
+        }
+
+        /* الأزرار العامة بنمط PayGuard */
+        .pg-btn {
+            padding: 9px 18px;
+            border-radius: var(--pg-radius-md);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .pg-btn:active {
+            transform: scale(0.98);
+        }
+
+        .pg-btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .pg-btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .pg-btn-emerald {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+
+        .pg-btn-emerald:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .pg-btn-dark {
+            background: #0f172a;
+            color: #ffffff;
+            border: 1px solid #334155;
+        }
+
+        .pg-btn-dark:hover {
+            background: #1e293b;
+            color: #ffffff;
+            border-color: #475569;
+            transform: translateY(-1px);
+        }
+
+        .pg-btn-outline {
+            background: #ffffff;
+            color: var(--pg-slate-700);
+            border: 1px solid var(--pg-slate-200);
+        }
+
+        .pg-btn-outline:hover {
+            background: var(--pg-slate-50);
+            border-color: var(--pg-slate-300);
+            color: var(--pg-slate-900);
+            transform: translateY(-1px);
+        }
+
+        .pg-btn-white {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .pg-btn-white:hover {
+            background: #f8fafc;
+            transform: translateY(-1px);
+        }
+
+        .pg-btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: var(--pg-radius-sm);
+        }
+
+        /* -------------------------------------------------------------
+           CONTAINER & LAYOUT
+        ------------------------------------------------------------- */
+        .pg-container {
+            max-width: 1320px;
+            width: 100%;
+            margin: 24px auto 40px auto;
+            padding: 0 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .pg-card {
+            background: #ffffff;
+            border-radius: var(--pg-radius-lg);
+            border: 1px solid var(--pg-slate-200);
+            padding: 26px;
+            box-shadow: var(--pg-shadow-card);
+            position: relative;
+        }
+
+        .pg-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .pg-card-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--pg-slate-900);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pg-card-subtitle {
+            font-size: 13px;
+            color: var(--pg-slate-500);
+            margin-top: 3px;
+            font-weight: 500;
+        }
+
+        /* شريط التنبيه عند استرجاع شهر محفوظ */
+        .archive-banner {
+            display: none;
+            background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+            border: 1px solid #bfdbfe;
+            border-radius: var(--pg-radius-md);
+            padding: 14px 22px;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #1e40af;
+            font-weight: 700;
+            box-shadow: var(--pg-shadow-xs);
+        }
+
+        .archive-banner-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* -------------------------------------------------------------
+           DROPZONE - منطقة رفع ومعالجة ملف البصمة
+        ------------------------------------------------------------- */
+        .dropzone {
+            border: 2px dashed #94a3b8;
+            border-radius: var(--pg-radius-lg);
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 44px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .dropzone:hover, .dropzone.dragover {
+            border-color: #2563eb;
+            background: #eff6ff;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.1);
+        }
+
+        .dropzone-icon {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 14px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1d4ed8;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        }
+
+        .dropzone-icon svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .dropzone h3 {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--pg-slate-800);
+            margin-bottom: 6px;
+        }
+
+        .dropzone p {
+            font-size: 13px;
+            color: var(--pg-slate-500);
+            margin-bottom: 16px;
+        }
+
+        /* -------------------------------------------------------------
+           STATS GRID - بطاقات الـ KPI الإحصائية
+        ------------------------------------------------------------- */
+        .stats-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: var(--pg-radius-md);
+            border: 1px solid var(--pg-slate-200);
+            padding: 18px 20px;
+            box-shadow: var(--pg-shadow-card);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--pg-shadow-float);
+        }
+
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            inset-inline: 0;
+            height: 3px;
+            background: var(--stat-accent, #2563eb);
+        }
+
+        .stat-card.emerald { --stat-accent: #10b981; }
+        .stat-card.blue { --stat-accent: #2563eb; }
+        .stat-card.amber { --stat-accent: #f59e0b; }
+        .stat-card.cyan { --stat-accent: #06b6d4; }
+        .stat-card.slate { --stat-accent: #64748b; }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .stat-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--pg-slate-500);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--stat-icon-bg, #f1f5f9);
+            color: var(--stat-accent, #2563eb);
+        }
+
+        .stat-card.emerald .stat-icon { background: #ecfdf5; color: #059669; }
+        .stat-card.blue .stat-icon { background: #eff6ff; color: #2563eb; }
+        .stat-card.amber .stat-icon { background: #fffbeb; color: #d97706; }
+        .stat-card.cyan .stat-icon { background: #ecfeff; color: #0891b2; }
+        .stat-card.slate .stat-icon { background: #f1f5f9; color: #475569; }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--pg-slate-900);
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .stat-unit {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--pg-slate-400);
+            margin-inline-start: 4px;
+        }
+
+        /* -------------------------------------------------------------
+           TOOLBAR & CONTROLS - شريط أدوات الكشف
+        ------------------------------------------------------------- */
+        .table-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .search-box-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 240px;
+            max-width: 340px;
+        }
+
+        .search-box-wrap svg {
+            position: absolute;
+            inset-inline-start: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: var(--pg-slate-400);
+            pointer-events: none;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 9px 14px;
+            padding-inline-start: 36px;
+            border-radius: var(--pg-radius-md);
+            border: 1px solid var(--pg-slate-300);
+            background: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--pg-slate-800);
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-box:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .toolbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .factor-control {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--pg-slate-100);
+            padding: 4px 10px;
+            border-radius: var(--pg-radius-sm);
+            border: 1px solid var(--pg-slate-200);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--pg-slate-700);
+        }
+
+        .factor-control input {
+            width: 50px;
+            padding: 4px 6px;
+            border-radius: 6px;
+            border: 1px solid var(--pg-slate-300);
+            text-align: center;
+            font-weight: 800;
+            font-size: 12px;
+            outline: none;
+        }
+
+        /* -------------------------------------------------------------
+           TABLE - جدول كشف المرتبات المؤسسي
+        ------------------------------------------------------------- */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: var(--pg-radius-md);
+            border: 1px solid var(--pg-slate-200);
+            box-shadow: var(--pg-shadow-xs);
+        }
+
+        .payroll-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: start;
+            font-size: 13px;
+            background: #ffffff;
+        }
+
+        .payroll-table thead {
+            background: #0f172a;
+            color: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .payroll-table th {
+            padding: 12px 14px;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid #334155;
+            white-space: nowrap;
+        }
+
+        .payroll-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--pg-slate-200);
+            vertical-align: middle;
+            white-space: nowrap;
+            font-weight: 600;
+            color: var(--pg-slate-700);
+        }
+
+        .payroll-table tbody tr {
+            transition: background-color 0.15s, transform 0.15s;
+        }
+
+        .payroll-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* هوية الموظف وأيقونة الـ Avatar */
+        .emp-col {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .emp-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 11px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .emp-name-text {
+            font-weight: 800;
+            color: var(--pg-slate-900);
+            font-size: 13px;
+        }
+
+        .emp-sub-id {
+            font-size: 11px;
+            color: var(--pg-slate-400);
+            font-weight: 600;
+        }
+
+        /* بادجات السلف والحضور */
+        .pg-badge {
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pg-badge-green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .pg-badge-blue { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+        .pg-badge-amber { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .pg-badge-red { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .pg-badge-slate { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+
+        .net-salary-pill {
+            font-size: 14px;
+            font-weight: 900;
+            color: #059669;
+            background: #ecfdf5;
+            padding: 4px 10px;
+            border-radius: 8px;
+            border: 1px solid #a7f3d0;
+            display: inline-block;
+        }
+
+        .table-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-action-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            border: 1px solid var(--pg-slate-200);
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--pg-slate-600);
+            transition: all 0.2s;
+        }
+
+        .btn-action-icon:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+            background: #eff6ff;
+            transform: scale(1.08);
+        }
+
+        .btn-action-icon.pdf-btn:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: #fef2f2;
+        }
+
+        /* -------------------------------------------------------------
+           MODAL - نافذة التعديل والتفاصيل الفخمة
+        ------------------------------------------------------------- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 13, 24, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-container {
+            background: #ffffff;
+            border-radius: var(--pg-radius-xl);
+            max-width: 860px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--pg-shadow-float);
+            animation: pgModalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid var(--pg-slate-200);
+        }
+
+        @keyframes pgModalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-header {
+            padding: 18px 26px;
+            border-bottom: 1px solid var(--pg-slate-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: #ffffff;
+            z-index: 20;
+        }
+
+        .modal-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-header h3 {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--pg-slate-900);
+        }
+
+        .modal-close-btn {
+            background: var(--pg-slate-100);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: var(--pg-slate-500);
+            transition: all 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: var(--pg-slate-200);
+            color: var(--pg-slate-900);
+        }
+
+        .modal-body {
+            padding: 24px 28px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 800;
+            color: #2563eb;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .pg-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .pg-form-group label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--pg-slate-700);
+        }
+
+        .pg-form-group input {
+            padding: 9px 12px;
+            border: 1px solid var(--pg-slate-300);
+            border-radius: var(--pg-radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--pg-slate-900);
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .pg-form-group input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .pg-form-group input[readonly] {
+            background: var(--pg-slate-100);
+            color: var(--pg-slate-500);
+        }
+
+        .form-hint {
+            font-size: 10.5px;
+            color: var(--pg-slate-400);
+            font-weight: 600;
+        }
+
+        /* صندوق التحذير المالي الفوري عند تجاوز السلفة */
+        .advance-warning-box {
+            display: none;
+            background: #fff1f2;
+            border: 1.5px solid #f43f5e;
+            border-radius: var(--pg-radius-md);
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.15);
+            animation: pulseWarn 1.8s infinite ease-in-out;
+        }
+
+        @keyframes pulseWarn {
+            0%, 100% { border-color: #f43f5e; }
+            50% { border-color: #fda4af; }
+        }
+
+        .advance-warning-title {
+            color: #be123c;
+            font-weight: 800;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .advance-warning-text {
+            color: #9f1239;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.45;
+        }
+
+        /* بطاقة الحساب اللحظي المباشر (Dark SaaS Theme) */
+        .live-summary-card {
+            background: #0f172a;
+            color: #ffffff;
+            border-radius: var(--pg-radius-md);
+            padding: 16px 20px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.2);
+            border: 1px solid #334155;
+        }
+
+        .summary-item-val {
+            font-size: 16px;
+            font-weight: 800;
+            color: #38bdf8;
+        }
+
+        .summary-item-val.net-val {
+            color: #34d399;
+            font-size: 18px;
+        }
+
+        .summary-item-lbl {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 3px;
+            font-weight: 600;
+        }
+
+        .modal-footer {
+            padding: 16px 26px;
+            border-top: 1px solid var(--pg-slate-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            background: #ffffff;
+            z-index: 20;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .modal-footer-left, .modal-footer-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* -------------------------------------------------------------
+           TOAST NOTIFICATION
+        ------------------------------------------------------------- */
+        .pg-toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(50px);
+            background: #090e17;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 13.5px;
+            box-shadow: var(--pg-shadow-float);
+            z-index: 9999;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .pg-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .pg-toast-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #10b981;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        /* لغات الاتجاه (RTL / LTR) */
+        html[dir="ltr"] .pg-header {
+            direction: ltr;
+        }
+
+        html[dir="ltr"] .payroll-table th, 
+        html[dir="ltr"] .payroll-table td {
+            text-align: left;
+        }
+
+        html[dir="ltr"] .stat-unit {
+            margin-inline-start: 4px;
+            margin-inline-end: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الترويسة الرئيسية للنظام الفخم PayGuard -->
+    <header class="pg-header">
+        <div class="pg-brand" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+            <div class="pg-logo-shield">
+                <!-- أيقونة الدرع البيومتري وحماية المدفوعات -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="m9 12 2 2 4-4"/>
+                </svg>
+            </div>
+            <div class="pg-brand-text">
+                <h1>PayGuard <span class="badge-pro">v2.0 PRO</span></h1>
+                <p id="appSubtitle">Smart Payroll & Attendance System | نظام المرتبات وحضور البصمة الذكي</p>
+            </div>
+        </div>
+
+        <div class="pg-header-center">
+            <div class="system-status-pill">
+                <span class="status-dot"></span>
+                <span id="statusLiveText">LIVE SYSTEM</span>
+            </div>
+
+            <!-- قائمة الأرشيف التاريخي للشهور -->
+            <div class="history-wrap" id="historyWrap" style="display: none;">
+                <label id="lblHistory">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    الأرشيف:
+                </label>
+                <select id="historySelect" class="history-select" onchange="onHistoryMonthChange()">
+                    <option value="">اختر شهراً محفوظاً...</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="pg-header-actions">
+            <!-- زر رفع شهر جديد -->
+            <button class="pg-btn pg-btn-white pg-btn-sm" id="btnUploadMonth" onclick="document.getElementById('fileInput').click()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span id="btnUploadMonthText">رفع شهر جديد</span>
+            </button>
+            <input type="file" id="fileInput" accept=".txt,.log" style="display: none;" onchange="handleFileSelect(event)">
+
+            <!-- زر التبديل الفوري بين اللغتين -->
+            <button class="btn-lang-toggle" id="langToggleBtn" onclick="toggleLanguage()" title="Switch Language / تبديل اللغة">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <span id="langBtnText">🌐 English</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي للمنصة -->
+    <main class="pg-container">
+
+        <!-- شريط التنبيه عند استعراض شهر محفوظ من الأرشيف -->
+        <div class="archive-banner" id="archiveBanner">
+            <div class="archive-banner-left">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <div>
+                    <span id="archiveMonthLabel">أنت تتصفح حالياً أرشيف شهر:</span>
+                    <strong id="bannerMonthName" style="color:#1e3a8a; font-size:14px; margin-inline: 4px;">-</strong>
+                    <span style="font-size: 11px; opacity:0.8;" id="bannerDaysLogs"></span>
+                </div>
+            </div>
+            <button class="pg-btn pg-btn-dark pg-btn-sm" id="btnSwitchMonth" onclick="startNewMonth()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                <span id="btnSwitchMonthText">رفع ملف شهر آخر</span>
+            </button>
+        </div>
+
+        <!-- الخطوة 1: بطاقة رفع ملف البصمة -->
+        <section class="pg-card" id="step1Card">
+            <div class="pg-card-header">
+                <div>
+                    <div class="pg-card-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        <span id="step1Title">استيراد ومعالجة سجلات البصمة</span>
+                    </div>
+                    <div class="pg-card-subtitle" id="step1Subtitle">يدعم ملفات ZKTeco وسجلات الحضور والانصراف الخام (.txt)</div>
+                </div>
+            </div>
+
+            <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                <div class="dropzone-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <h3 id="dropzoneTitle">اضغط هنا لاختيار ملف البصمة أو اسحبه وأفلته هنا</h3>
+                <p id="dropzoneDesc">يتم التعرف تلقائياً على اسم الشهر وسنته وعدد أيامه وسجلات حضور وانصراف الموظفين</p>
+                <button class="pg-btn pg-btn-primary" type="button">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <span id="btnBrowseFile">اختيار الملف من الجهاز</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- شبكة بطاقات الإحصائيات (KPIs) -->
+        <section class="stats-grid" id="statsGrid">
+            <!-- 1. إجمالي الصافي -->
+            <div class="stat-card emerald">
+                <div class="stat-header">
+                    <span class="stat-title" id="lblTotalNetCard">صافي المرتبات الكلي</span>
+                    <div class="stat-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                    </div>
+                </div>
+                <div class="stat-value mono-num"><span id="statNetSalaries">0.00</span><span class="stat-unit curr-unit">ج.م</span></div>
+            </div>
+
+            <!-- 2. إجمالي الأساسي -->
+            <div class="stat-card blue">
+                <div class="stat-header">
+                    <span class="stat-title" id="lblTotalBaseCard">إجمالي الرواتب الأساسية</span>
+                    <div class="stat-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                    </div>
+                </div>
+                <div class="stat-value mono-num"><span id="statBaseSalaries">0.00</span><span class="stat-unit curr-unit">ج.م</span></div>
+            </div>
+
+            <!-- 3. إجمالي السلف المخصومة -->
+            <div class="stat-card amber">
+                <div class="stat-header">
+                    <span class="stat-title" id="lblTotalAdvancesCard">أقساط السلف المخصومة</span>
+                    <div class="stat-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                </div>
+                <div class="stat-value mono-num"><span id="statTotalAdvances">0.00</span><span class="stat-unit curr-unit">ج.م</span></div>
+            </div>
+
+            <!-- 4. إجمالي الإضافي والجمعة -->
+            <div class="stat-card cyan">
+                <div class="stat-header">
+                    <span class="stat-title" id="lblTotalOvertimeCard">بدلات الجمعة والإضافي</span>
+                    <div class="stat-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    </div>
+                </div>
+                <div class="stat-value mono-num"><span id="statTotalOvertime">0.00</span><span class="stat-unit curr-unit">ج.م</span></div>
+            </div>
+
+            <!-- 5. عدد الموظفين -->
+            <div class="stat-card slate">
+                <div class="stat-header">
+                    <span class="stat-title" id="lblActiveEmpsCard">الموظفون المسجلون</span>
+                    <div class="stat-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                </div>
+                <div class="stat-value mono-num"><span id="statEmployeeCount">0</span><span class="stat-unit" id="unitEmpText">موظف</span></div>
+            </div>
+        </section>
+
+        <!-- الخطوة 2: جدول كشف المرتبات وإدارة الموظفين -->
+        <section class="pg-card" id="step2Card" style="display: none;">
+            <div class="table-toolbar">
+                <div class="search-box-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="searchInput" class="search-box" placeholder="ابحث باسم أو كود الموظف..." oninput="onSearchInput()">
+                </div>
+
+                <div class="toolbar-actions">
+                    <!-- معامل مضاعفة الجمعة -->
+                    <div class="factor-control" title="معامل احتساب أجر يوم الجمعة">
+                        <span id="lblFridayFactor">معامل الجمعة:</span>
+                        <input type="number" id="fridayFactorInput" value="2.0" step="0.1" min="1.0" onchange="onFridayFactorChange()">
+                    </div>
+
+                    <!-- حفظ الكشف بالكامل في قاعدة البيانات -->
+                    <button class="pg-btn pg-btn-emerald" id="btnSavePayroll" onclick="saveEntirePayroll()" title="حفظ وتثبيت كافة بيانات الكشف في الأرشيف">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        <span id="btnSavePayrollText">💾 حفظ الكشف بالكامل</span>
+                    </button>
+
+                    <!-- تصدير لإكسيل -->
+                    <button class="pg-btn pg-btn-dark" id="btnExportExcel" onclick="exportToExcel()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+                        <span id="btnExportExcelText">تصدير إكسيل</span>
+                    </button>
+
+                    <!-- إضافة موظف يدوي -->
+                    <button class="pg-btn pg-btn-outline" id="btnAddEmployee" onclick="openAddEmployeeModal()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <span id="btnAddEmployeeText">إضافة موظف</span>
+                    </button>
+
+                    <!-- فتح مجلد التقارير -->
+                    <button class="pg-btn pg-btn-outline" id="btnOpenPdfFolder" onclick="openPdfReportsFolder()" title="فتح مجلد التقارير PDF في ويندوز">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                        <span id="btnOpenPdfFolderText">مجلد الـ PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- جدول عرض بيانات الموظفين -->
+            <div class="table-responsive">
+                <table class="payroll-table" id="payrollTable">
+                    <thead>
+                        <tr>
+                            <th id="thId">كود</th>
+                            <th id="thName">اسم الموظف</th>
+                            <th id="thBasic">الأساسي</th>
+                            <th id="thAttended">حضور</th>
+                            <th id="thVacations">إجازات</th>
+                            <th id="thFridayOt">جمعة وإضافي</th>
+                            <th id="thDeductions">استقطاعات</th>
+                            <th id="thNet">صافي الراتب</th>
+                            <th id="thAdvanceBal">حالة السلفة</th>
+                            <th id="thActions" style="text-align: center;">إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="payrollTableBody">
+                        <!-- تملأ ديناميكياً عبر الجافاسكريبت -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- -------------------------------------------------------------
+         MODAL 1: نافذة تعديل بيانات ومفردات مرتب الموظف
+    ------------------------------------------------------------- -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-header-left">
+                    <div class="emp-avatar" id="mAvatarInitials">--</div>
+                    <div>
+                        <h3 id="modalTitle">تعديل بيانات وحسابات الموظف</h3>
+                        <div style="font-size: 11.5px; color: var(--pg-slate-400); font-weight: 600;" id="mEmpSubHeader">-</div>
+                    </div>
+                </div>
+                <button class="modal-close-btn" onclick="closeModal()">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- شريط التنبيه الفوري عند تجاوز قسط السلفة للرصيد -->
+                <div class="advance-warning-box" id="advanceWarningBox">
+                    <div class="advance-warning-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        <span id="warnAdvanceTitle">⚠️ تحذير مالي: القسط المخصوم أكبر من رصيد السلفة!</span>
+                    </div>
+                    <div class="advance-warning-text" id="warnAdvanceText">
+                        المبلغ المخصوم (<span id="warnAdvanceVal" class="mono-num">0</span> <span class="curr-unit">ج.م</span>) أكبر من إجمالي رصيد السلفة (<span id="warnTotalVal" class="mono-num">0</span> <span class="curr-unit">ج.م</span>).<br>
+                        الرصيد المتبقي سيصبح بالسالب: <strong id="warnRemVal" class="mono-num" style="color:#b91c1c;">-0.00</strong> <span class="curr-unit">ج.م</span> (دائن للموظف). يلزم موافقة واعتماد المدير لتأكيد هذا الإجراء.
+                    </div>
+                </div>
+
+                <!-- 1. البيانات الأساسية -->
+                <div class="section-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span id="secPersonalInfo">1. البيانات الأساسية والتعاقدية</span>
+                </div>
+                <div class="form-grid-2">
+                    <div class="pg-form-group">
+                        <label id="lblMName">اسم الموظف</label>
+                        <input type="text" id="mName">
+                    </div>
+                    <div class="pg-form-group">
+                        <label id="lblMBasicSalary">الراتب الأساسي الشهري (يدعم الكسور)</label>
+                        <input type="number" id="mBasicSalary" step="0.01" oninput="calculateModalLive()">
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="pg-form-group">
+                        <label id="lblMWorkHours">ساعات العمل المقررة يومياً</label>
+                        <input type="number" id="mWorkHours" step="0.5" oninput="calculateModalLive()">
+                    </div>
+                    <div class="pg-form-group">
+                        <label id="lblMEmpId">كود الموظف / رقم البصمة</label>
+                        <input type="text" id="mEmpId" readonly>
+                    </div>
+                </div>
+
+                <!-- 2. الحضور والغياب والإضافي -->
+                <div class="section-label" style="color: #059669;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <span id="secAttendance">2. الحضور والغياب والإضافي</span>
+                </div>
+                <div class="form-grid-3">
+                    <div class="pg-form-group">
+                        <label id="lblMAttendedDays">أيام الحضور الفعلي</label>
+                        <input type="number" id="mAttendedDays" step="0.5" readonly>
+                        <span class="form-hint" id="lblMAttendedHint">محسوب آلياً من البصمات</span>
+                    </div>
+                    <div class="pg-form-group">
+                        <label id="lblMVacationDays">إجازات رسمية / مدفوعة</label>
+                        <input type="number" id="mVacationDays" step="0.5" oninput="calculateModalLive()">
+                        <span class="form-hint" id="lblMVacationHint">تُضاف لأيام الاستحقاق</span>
+                    </div>
+                    <div class="pg-form-group">
+                        <label id="lblMAbsenceDays">أيام الغياب</label>
+                        <input type="number" id="mAbsenceDays" step="0.5" oninput="calculateModalLive()">
+                        <span class="form-hint" id="lblMAbsenceHint">أيام الشهر - الحضور</span>
+                    </div>
+                </div>
+                <div class="form-grid-3">
+                    <div class="pg-form-group">
+                        <label id="lblMFridayDays">حضور أيام الجمعة (أيام)</label>
+                        <input type="number" id="mFridayDays" step="0.5" oninput="calculateModalLive()">
+                        <span class="form-hint" id="lblMFridayHint">تُحسب بالمعامل المضاعف</span>
+                    </div>
+                    <div class="pg-form-group">
+                        <label id="lblMOvertimeHours">ساعات إضافية (س +)</label>
+                        <input type="number" id="mOvertimeHours" step="0.25" oninput="calculateModalLive()">
+                        <span class="form-hint" id="lblMOvertimeHint">تُضرب في معدل الساعة</span>
+                    </div>
+                    <div class="pg-form-group">
+                        <label id="lblMBonus">بونص ومكافآت (يدعم الكسور)</label>
+                        <input type="number" id="mBonus" step="0.01" oninput="calculateModalLive()">
+                        <span class="form-hint" id="lblMBonusHint">تُضاف مباشرة للصافي</span>
+                    </div>
+                </div>
+
+                <!-- 3. رصيد السلف والاستقطاعات والرقابة -->
+                <div class="section-label" style="color: #b45309;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span id="secAdvances">3. رصيد السلف والأقساط والاستقطاعات</span>
+                </div>
+                <div class="form-grid-3">
+                    <div class="pg-form-group">
+                        <label id="lblMTotalAdvance">إجمالي رصيد السلفة للموظف</label>
+                        <input type="number" id="mTotalAdvance" step="0.01" style="background:#fffbeb; color:#b45309; font-weight:800;" oninput="calculateModalLive()">
+                        <span class="form-hint" id="lblMTotalAdvanceHint">رصيد السلفة الإجمالي المسجل</span>
+                    </div>
+                    <div class="pg-form-group">
+                        <label id="lblMAdvance">قسط السلفة المخصوم هذا الشهر</label>
+                        <input type="number" id="mAdvance" step="0.01" style="background:#fff1f2; color:#be123c; font-weight:800;" oninput="calculateModalLive()">
+                        <span class="form-hint" id="lblMAdvanceHint">القسط المحدد خصمه من الراتب</span>
+                    </div>
+                    <div class="pg-form-group">
+                        <label id="lblMRemainingAdvance">المتبقي من السلفة للشهر القادم</label>
+                        <input type="number" id="mRemainingAdvance" step="0.01" readonly style="font-weight:800;">
+                        <span class="form-hint" id="lblMRemainingAdvanceHint">يحسب تلقائياً (يقبل بالسالب)</span>
+                    </div>
+                </div>
+                <div class="pg-form-group" style="margin-bottom: 18px;">
+                    <label id="lblMDeduction">خصومات وجزاءات أخرى (يدعم الكسور)</label>
+                    <input type="number" id="mDeduction" step="0.01" oninput="calculateModalLive()">
+                </div>
+
+                <!-- شريط الحساب المباشر اللحظي داخل المودال (Live Preview) -->
+                <div class="live-summary-card">
+                    <div>
+                        <div class="summary-item-val mono-num" id="prevDayRate">0.00</div>
+                        <div class="summary-item-lbl" id="lblPrevDayRate">أجر اليوم</div>
+                    </div>
+                    <div>
+                        <div class="summary-item-val mono-num" id="prevHourRate">0.00</div>
+                        <div class="summary-item-lbl" id="lblPrevHourRate">أجر الساعة</div>
+                    </div>
+                    <div>
+                        <div class="summary-item-val mono-num" id="prevBaseAttendance">0.00</div>
+                        <div class="summary-item-lbl" id="lblPrevBaseAttendance">أجر الحضور</div>
+                    </div>
+                    <div>
+                        <div class="summary-item-val mono-num" id="prevRemainingAdvance">0.00</div>
+                        <div class="summary-item-lbl" id="lblPrevRemainingAdvance">متبقي السلفة</div>
+                    </div>
+                    <div>
+                        <div class="summary-item-val net-val mono-num" id="prevNetSalary">0.00</div>
+                        <div class="summary-item-lbl" id="lblPrevNetSalary" style="color:#a7f3d0; font-weight:800;">صافي القبض</div>
+                    </div>
+                </div>
+
+                <!-- جدول تفاصيل البصمات اليومية -->
+                <div id="punchesDetailsBox" style="display: none;">
+                    <div class="section-label" style="color: #475569;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        <span id="punchesTitle">سجل بصمات الحضور والانصراف اليومية خلال الشهر</span>
+                    </div>
+                    <div class="table-responsive" style="max-height: 240px;">
+                        <table class="payroll-table">
+                            <thead>
+                                <tr>
+                                    <th id="thDate">التاريخ</th>
+                                    <th id="thFriday">جمعة</th>
+                                    <th id="thCheckIn">الدخول</th>
+                                    <th id="thCheckOut">الخروج</th>
+                                    <th id="thHours">ساعات العمل</th>
+                                    <th id="thPunches">عدد البصمات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="punchesTableBody">
+                                <!-- تملأ ديناميكياً -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="modal-footer-left">
+                    <button class="pg-btn pg-btn-dark pg-btn-sm" onclick="printActiveEmployeePDF()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        <span id="btnPdfModalFooter">📄 طباعة تقرير PDF باسم الموظف</span>
+                    </button>
+                    <button class="pg-btn pg-btn-outline pg-btn-sm" onclick="previewActiveEmployeeSlip()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <span id="btnPreviewModalFooter">معاينة القسيمة</span>
+                    </button>
+                </div>
+                <div class="modal-footer-right">
+                    <button class="pg-btn pg-btn-outline pg-btn-sm" onclick="closeModal()" id="btnCancelModal">إلغاء</button>
+                    <button class="pg-btn pg-btn-emerald pg-btn-sm" onclick="saveModalChanges()" id="btnSaveModal">حفظ وتحديث الحساب</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- -------------------------------------------------------------
+         MODAL 2: إضافة موظف يدوي بدون بصمة
+    ------------------------------------------------------------- -->
+    <div class="modal-overlay" id="addEmpModal">
+        <div class="modal-container" style="max-width: 540px;">
+            <div class="modal-header">
+                <h3 id="addModalTitle">إضافة موظف جديد إلى الكشف</h3>
+                <button class="modal-close-btn" onclick="closeAddEmpModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="pg-form-group" style="margin-bottom: 12px;">
+                    <label id="lblAddName">اسم الموظف *</label>
+                    <input type="text" id="addName" placeholder="مثال: أحمد محمد">
+                </div>
+                <div class="pg-form-group" style="margin-bottom: 12px;">
+                    <label id="lblAddEmpId">كود الموظف / البصمة *</label>
+                    <input type="text" id="addEmpId" placeholder="مثال: 105">
+                </div>
+                <div class="form-grid-2">
+                    <div class="pg-form-group">
+                        <label id="lblAddSalary">الراتب الأساسي</label>
+                        <input type="number" id="addSalary" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="pg-form-group">
+                        <label id="lblAddHours">ساعات العمل</label>
+                        <input type="number" id="addHours" value="10" step="0.5">
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="pg-form-group">
+                        <label id="lblAddTotalAdvance">رصيد السلفة المسبق (إن وجد)</label>
+                        <input type="number" id="addTotalAdvance" value="0" step="0.01">
+                    </div>
+                    <div class="pg-form-group">
+                        <label id="lblAddAttended">أيام الحضور المقدرة</label>
+                        <input type="number" id="addAttended" value="26" step="0.5">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: flex-end;">
+                <button class="pg-btn pg-btn-outline pg-btn-sm" onclick="closeAddEmpModal()" id="btnCancelAddEmp">إلغاء</button>
+                <button class="pg-btn pg-btn-emerald pg-btn-sm" onclick="saveManualEmployee()" id="btnSaveAddEmp">إضافة الموظف</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- رسالة التوست العائمة (Toast Notification) -->
+    <div class="pg-toast" id="toastMessage">
+        <div class="pg-toast-icon">✓</div>
+        <span id="toastText">تمت العملية بنجاح</span>
+    </div>
+
+    <!-- -------------------------------------------------------------
+         JAVASCRIPT - المنطق البرمجي وثنائية اللغة والحسابات اللحظية
+    ------------------------------------------------------------- -->
+    <script>
+        let payrollEmployees = [];
+        let currentMonthMeta = {};
+        let activeEditEmpId = null;
+
+        // اللغة المفعلة حالياً: استرجاع من الذاكرة المحلية أو العربية افتراضياً
+        let currentLang = localStorage.getItem('payroll_app_lang') || 'ar';
+
+        // قاموس الترجمة الشامل لجميع عناصر الواجهة
+        const TRANSLATIONS = {
+            ar: {
+                appSubtitle: "PayGuard | نظام كشف المرتبات وحضور البصمة الذكي",
+                statusLive: "النظام متصل",
+                lblHistory: "الأرشيف:",
+                historySelectDefault: "اختر شهراً محفوظاً...",
+                btnUploadMonthText: "رفع شهر جديد",
+                langToggleText: "🌐 English",
+                archiveMonthLabel: "أنت تتصفح حالياً أرشيف شهر:",
+                btnSwitchMonthText: "رفع ملف شهر آخر",
+                step1Title: "استيراد ومعالجة سجلات البصمة",
+                step1Subtitle: "يدعم ملفات ZKTeco وسجلات الحضور والانصراف الخام (.txt)",
+                dropzoneTitle: "اضغط هنا لاختيار ملف البصمة أو اسحبه وأفلته هنا",
+                dropzoneDesc: "يتم التعرف تلقائياً على اسم الشهر وسنته وعدد أيامه وسجلات حضور وانصراف الموظفين",
+                btnBrowseFile: "اختيار الملف من الجهاز",
+                lblTotalNetCard: "صافي المرتبات الكلي",
+                lblTotalBaseCard: "إجمالي الرواتب الأساسية",
+                lblTotalAdvancesCard: "أقساط السلف المخصومة",
+                lblTotalOvertimeCard: "بدلات الجمعة والإضافي",
+                lblActiveEmpsCard: "الموظفون المسجلون",
+                unitEmpText: "موظف",
+                searchPlaceholder: "ابحث باسم أو كود الموظف...",
+                lblFridayFactor: "معامل الجمعة:",
+                btnSavePayrollText: "💾 حفظ الكشف بالكامل",
+                btnExportExcelText: "تصدير إكسيل",
+                btnAddEmployeeText: "إضافة موظف",
+                btnOpenPdfFolderText: "مجلد الـ PDF",
+                thId: "كود",
+                thName: "اسم الموظف",
+                thBasic: "الأساسي",
+                thAttended: "حضور",
+                thVacations: "إجازات",
+                thFridayOt: "جمعة وإضافي",
+                thDeductions: "استقطاعات",
+                thNet: "صافي الراتب",
+                thAdvanceBal: "حالة السلفة",
+                thActions: "إجراءات",
+                badgeFridayExtra: "بدل جمعة",
+                badgeOvertime: "إضافي",
+                badgeBonus: "بونص",
+                badgeAdvanceDeducted: "قسط سلفة",
+                badgeDeduction: "خصم",
+                badgeClearedAdvance: "سلفة مسددة",
+                badgeRemainingAdvance: "متبقي سلفة",
+                badgeNegativeAdvance: "سلفة دائنة",
+                badgeNew: "جديد",
+                btnEditTip: "تعديل التفاصيل",
+                btnPdfTip: "طباعة تقرير PDF",
+                modalTitle: "تعديل بيانات وحسابات الموظف",
+                secPersonalInfo: "1. البيانات الأساسية والتعاقدية",
+                lblMName: "اسم الموظف",
+                lblMBasicSalary: "الراتب الأساسي الشهري (يدعم الكسور)",
+                lblMWorkHours: "ساعات العمل المقررة يومياً",
+                lblMEmpId: "كود الموظف / رقم البصمة",
+                secAttendance: "2. الحضور والغياب والإضافي",
+                lblMAttendedDays: "أيام الحضور الفعلي",
+                lblMAttendedHint: "محسوب آلياً من البصمات",
+                lblMVacationDays: "إجازات رسمية / مدفوعة",
+                lblMVacationHint: "تُضاف لأيام الاستحقاق",
+                lblMAbsenceDays: "أيام الغياب",
+                lblMAbsenceHint: "أيام الشهر - الحضور",
+                lblMFridayDays: "حضور أيام الجمعة (أيام)",
+                lblMFridayHint: "تُحسب بالمعامل المضاعف",
+                lblMOvertimeHours: "ساعات إضافية (س +)",
+                lblMOvertimeHint: "تُضرب في معدل الساعة",
+                lblMBonus: "بونص ومكافآت (يدعم الكسور)",
+                lblMBonusHint: "تُضاف مباشرة للصافي",
+                secAdvances: "3. رصيد السلف والأقساط والاستقطاعات",
+                lblMTotalAdvance: "إجمالي رصيد السلفة للموظف",
+                lblMTotalAdvanceHint: "رصيد السلفة الإجمالي المسجل",
+                lblMAdvance: "قسط السلفة المخصوم هذا الشهر",
+                lblMAdvanceHint: "القسط المحدد خصمه من الراتب",
+                lblMRemainingAdvance: "المتبقي من السلفة للشهر القادم",
+                lblMRemainingAdvanceHint: "يحسب تلقائياً (يقبل بالسالب)",
+                lblMDeduction: "خصومات وجزاءات أخرى (يدعم الكسور)",
+                warnAdvanceTitle: "⚠️ تحذير مالي: القسط المخصوم أكبر من رصيد السلفة!",
+                lblPrevDayRate: "أجر اليوم",
+                lblPrevHourRate: "أجر الساعة",
+                lblPrevBaseAttendance: "أجر الحضور",
+                lblPrevRemainingAdvance: "متبقي السلفة",
+                lblPrevNetSalary: "صافي القبض",
+                punchesTitle: "سجل بصمات الحضور والانصراف اليومية خلال الشهر",
+                thDate: "التاريخ",
+                thFriday: "جمعة",
+                thCheckIn: "الدخول",
+                thCheckOut: "الخروج",
+                thHours: "ساعات العمل",
+                thPunches: "عدد البصمات",
+                fridayYes: "جمعة ✓",
+                fridayNo: "عادي",
+                hoursUnit: "س",
+                btnPdfModalFooter: "📄 طباعة تقرير PDF باسم الموظف",
+                btnPreviewModalFooter: "معاينة القسيمة",
+                btnCancel: "إلغاء",
+                btnSaveModal: "حفظ وتحديث الحساب",
+                addModalTitle: "إضافة موظف جديد إلى الكشف",
+                lblAddName: "اسم الموظف *",
+                placeholderAddName: "مثال: أحمد محمد",
+                lblAddEmpId: "كود الموظف / البصمة *",
+                placeholderAddEmpId: "مثال: 105",
+                lblAddSalary: "الراتب الأساسي",
+                placeholderAddSalary: "0.00",
+                lblAddHours: "ساعات العمل",
+                placeholderAddHours: "10",
+                lblAddTotalAdvance: "رصيد السلفة المسبق (إن وجد)",
+                placeholderAddTotalAdvance: "0.00",
+                lblAddAttended: "أيام الحضور المقدرة",
+                btnSaveAddEmp: "إضافة الموظف",
+                alertFillEmpFields: "يرجى كتابة اسم الموظف وكود البصمة على الأقل!",
+                alertSelectMonthExport: "يرجى تحميل شهر أولاً لتصديره!",
+                alertNoEmpToSave: "لا يوجد موظفون لحفظهم! يرجى رفع ملف أو تحميل شهر.",
+                toastSaveAllSuccess: "✓ تم حفظ وتحديث بيانات كشف شهر {month} لعدد {count} موظفاً بنجاح!",
+                toastPdfGenerating: "جاري توليد تقرير PDF للموظف: {name}...",
+                toastPdfSuccess: "✓ تم توليد التقرير بنجاح: {filename}",
+                toastPdfError: "فشل توليد التقرير: ",
+                toastOpenFolderSuccess: "تم فتح مجلد التقارير في ويندوز بنجاح.",
+                toastOpenFolderFail: "تعذر فتح مجلد التقارير.",
+                confirmAdvanceWarningModal: "⚠️ تنبيه وتحذير مالي هام!\n\nالمبلغ المطلوب خصمه من السلفة ({adv} ج.م) أكبر من إجمالي رصيد سلفة الموظف ({tot} ج.م) للموظف: {name}!\n\nفي هذه الحالة سيصبح رصيد السلفة المتبقي بالسالب ({rem} ج.م) بزيادة قدرها {diff} ج.م لصالح الموظف.\n\nهل تم اعتماد وموافقة المدير على خصم هذا المبلغ وترحيل الرصيد بالسالب؟",
+                confirmAdvanceWarningSaveAll: "⚠️ تنبيه مالي هام قبل تثبيت الكشف بالكامل!\n\nيوجد عدد ({count}) موظف تم خصم أقساط سلف أكبر من رصيد سلفهم الإجمالي وسيترحل رصيدهم بالسالب:\n{list}\n\nهل تعتمد وتوافق الإدارة على حفظ الكشف وترحيل هذه الأرصدة بالسالب رسمياً؟",
+                confirmAdvanceWarningPdf: "⚠️ تحذير: قسط السلفة المخصوم ({adv} ج.م) أكبر من إجمالي رصيد السلفة ({tot} ج.م).\nالرصيد المتبقي بالسالب: {rem} ج.م.\nهل تود طباعة التقرير بهذه القيم المعتمدة؟",
+                currency: "ج.م",
+                negativeNote: "(سالب)"
+            },
+            en: {
+                appSubtitle: "PayGuard | Smart Payroll & Attendance System",
+                statusLive: "LIVE SYSTEM",
+                lblHistory: "Archive:",
+                historySelectDefault: "Select archived month...",
+                btnUploadMonthText: "Upload Month",
+                langToggleText: "🌐 العربية",
+                archiveMonthLabel: "Currently viewing archived month:",
+                btnSwitchMonthText: "Switch / Upload Month",
+                step1Title: "Import & Process Biometric Logs",
+                step1Subtitle: "Supports raw ZKTeco biometric attendance logs (.txt)",
+                dropzoneTitle: "Click to select biometric file or drag & drop here",
+                dropzoneDesc: "Month, year, days, check-in/out and worked hours are auto-detected",
+                btnBrowseFile: "Browse File on Computer",
+                lblTotalNetCard: "Total Net Salaries",
+                lblTotalBaseCard: "Total Base Salaries",
+                lblTotalAdvancesCard: "Loan Deductions Repaid",
+                lblTotalOvertimeCard: "Friday & Overtime Pay",
+                lblActiveEmpsCard: "Active Staff",
+                unitEmpText: "staff",
+                searchPlaceholder: "Search by employee name or ID...",
+                lblFridayFactor: "Friday Multiplier:",
+                btnSavePayrollText: "💾 Save Entire Payroll",
+                btnExportExcelText: "Export Excel",
+                btnAddEmployeeText: "Add Employee",
+                btnOpenPdfFolderText: "Open PDF Folder",
+                thId: "ID",
+                thName: "Employee Name",
+                thBasic: "Basic Salary",
+                thAttended: "Attended",
+                thVacations: "Vacations",
+                thFridayOt: "Friday / OT",
+                thDeductions: "Deductions",
+                thNet: "Net Payable",
+                thAdvanceBal: "Loan Balance",
+                thActions: "Actions",
+                badgeFridayExtra: "Friday Pay",
+                badgeOvertime: "Overtime",
+                badgeBonus: "Bonus",
+                badgeAdvanceDeducted: "Loan Repaid",
+                badgeDeduction: "Penalty",
+                badgeClearedAdvance: "Loan Cleared",
+                badgeRemainingAdvance: "Loan Due",
+                badgeNegativeAdvance: "Credit Balance",
+                badgeNew: "New",
+                btnEditTip: "Edit & Details",
+                btnPdfTip: "Print PDF Payslip",
+                modalTitle: "Edit Employee Payroll & Details",
+                secPersonalInfo: "1. Basic & Contract Info",
+                lblMName: "Employee Name",
+                lblMBasicSalary: "Monthly Basic Salary (supports decimals)",
+                lblMWorkHours: "Official Daily Work Hours",
+                lblMEmpId: "Employee ID / Punch Code",
+                secAttendance: "2. Attendance, Vacations & Overtime",
+                lblMAttendedDays: "Actual Attendance Days",
+                lblMAttendedHint: "Auto-calculated from biometric punches",
+                lblMVacationDays: "Paid Public Vacations",
+                lblMVacationHint: "Added to payable days",
+                lblMAbsenceDays: "Absence Days",
+                lblMAbsenceHint: "Month days minus attendance",
+                lblMFridayDays: "Friday Attendance (Days)",
+                lblMFridayHint: "Multiplied by Friday factor",
+                lblMOvertimeHours: "Overtime Hours (OT)",
+                lblMOvertimeHint: "Multiplied by hourly rate",
+                lblMBonus: "Bonus & Allowances (decimals supported)",
+                lblMBonusHint: "Added directly to net salary",
+                secAdvances: "3. Loans, Advances & Deductions",
+                lblMTotalAdvance: "Total Loan Balance",
+                lblMTotalAdvanceHint: "Recorded outstanding loan",
+                lblMAdvance: "Loan Installment Deducted This Month",
+                lblMAdvanceHint: "Amount deducted from this salary",
+                lblMRemainingAdvance: "Remaining Loan for Next Month",
+                lblMRemainingAdvanceHint: "Auto-calculated (negative allowed)",
+                lblMDeduction: "Other Penalties & Deductions",
+                warnAdvanceTitle: "⚠️ Financial Alert: Deducted installment exceeds loan balance!",
+                lblPrevDayRate: "Day Rate",
+                lblPrevHourRate: "Hour Rate",
+                lblPrevBaseAttendance: "Attendance Pay",
+                lblPrevRemainingAdvance: "Remaining Loan",
+                lblPrevNetSalary: "Net Salary",
+                punchesTitle: "Daily Biometric Punch Log for the Month",
+                thDate: "Date",
+                thFriday: "Friday",
+                thCheckIn: "Check-in",
+                thCheckOut: "Check-out",
+                thHours: "Worked Hours",
+                thPunches: "Punches",
+                fridayYes: "Friday ✓",
+                fridayNo: "Regular",
+                hoursUnit: "hrs",
+                btnPdfModalFooter: "📄 Print Employee PDF Payslip",
+                btnPreviewModalFooter: "Preview Payslip",
+                btnCancel: "Cancel",
+                btnSaveModal: "Save & Recalculate",
+                addModalTitle: "Add New Employee to Payroll",
+                lblAddName: "Employee Name *",
+                placeholderAddName: "e.g. John Doe",
+                lblAddEmpId: "Employee ID / Code *",
+                placeholderAddEmpId: "e.g. 105",
+                lblAddSalary: "Basic Salary",
+                placeholderAddSalary: "0.00",
+                lblAddHours: "Work Hours",
+                placeholderAddHours: "10",
+                lblAddTotalAdvance: "Initial Loan Balance",
+                placeholderAddTotalAdvance: "0.00",
+                lblAddAttended: "Estimated Attended Days",
+                btnSaveAddEmp: "Add Employee",
+                alertFillEmpFields: "Please enter employee name and ID at least!",
+                alertSelectMonthExport: "Please load a month first to export!",
+                alertNoEmpToSave: "No employees to save! Please upload or load a month.",
+                toastSaveAllSuccess: "✓ Successfully saved and updated payroll for {count} employees in {month}!",
+                toastPdfGenerating: "Generating PDF payslip for: {name}...",
+                toastPdfSuccess: "✓ PDF payslip generated: {filename}",
+                toastPdfError: "Failed to generate PDF: ",
+                toastOpenFolderSuccess: "PDF reports folder opened in Windows Explorer.",
+                toastOpenFolderFail: "Could not open reports folder.",
+                confirmAdvanceWarningModal: "⚠️ Important Financial Warning!\n\nThe requested loan deduction ({adv} EGP) exceeds total loan balance ({tot} EGP) for employee: {name}!\n\nThe remaining loan balance will become negative ({rem} EGP) with {diff} EGP in favor of the employee.\n\nHas management explicitly approved this deduction and carrying over the negative balance?",
+                confirmAdvanceWarningSaveAll: "⚠️ Important Financial Warning before saving payroll!\n\nThere are ({count}) employees whose loan deduction exceeds their total loan balance:\n{list}\n\nDoes management approve saving and officially carrying over these negative balances?",
+                confirmAdvanceWarningPdf: "⚠️ Warning: Deducted loan installment ({adv} EGP) exceeds total loan balance ({tot} EGP).\nRemaining balance: {rem} EGP.\nDo you want to print the payslip with these values?",
+                currency: "EGP",
+                negativeNote: "(neg)"
+            }
+        };
+
+        function applyLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('payroll_app_lang', lang);
+            const html = document.documentElement;
+            html.lang = lang;
+            html.dir = (lang === 'ar' ? 'rtl' : 'ltr');
+
+            const t = TRANSLATIONS[lang];
+
+            // Header elements
+            document.getElementById('appSubtitle').innerText = t.appSubtitle;
+            document.getElementById('statusLiveText').innerText = t.statusLive;
+            document.getElementById('lblHistory').innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ${t.lblHistory}`;
+            document.getElementById('btnUploadMonthText').innerText = t.btnUploadMonthText;
+            document.getElementById('langBtnText').innerText = t.langToggleText;
+
+            // Archive banner
+            document.getElementById('archiveMonthLabel').innerText = t.archiveMonthLabel;
+            document.getElementById('btnSwitchMonthText').innerText = t.btnSwitchMonthText;
+
+            // Step 1
+            document.getElementById('step1Title').innerText = t.step1Title;
+            document.getElementById('step1Subtitle').innerText = t.step1Subtitle;
+            document.getElementById('dropzoneTitle').innerText = t.dropzoneTitle;
+            document.getElementById('dropzoneDesc').innerText = t.dropzoneDesc;
+            document.getElementById('btnBrowseFile').innerText = t.btnBrowseFile;
+
+            // Stats grid labels & units
+            document.getElementById('lblTotalNetCard').innerText = t.lblTotalNetCard;
+            document.getElementById('lblTotalBaseCard').innerText = t.lblTotalBaseCard;
+            document.getElementById('lblTotalAdvancesCard').innerText = t.lblTotalAdvancesCard;
+            document.getElementById('lblTotalOvertimeCard').innerText = t.lblTotalOvertimeCard;
+            document.getElementById('lblActiveEmpsCard').innerText = t.lblActiveEmpsCard;
+            document.getElementById('unitEmpText').innerText = t.unitEmpText;
+            document.querySelectorAll('.curr-unit').forEach(el => el.innerText = t.currency);
+
+            // Step 2 & Toolbar
+            document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+            document.getElementById('lblFridayFactor').innerText = t.lblFridayFactor;
+            document.getElementById('btnSavePayrollText').innerText = t.btnSavePayrollText;
+            document.getElementById('btnExportExcelText').innerText = t.btnExportExcelText;
+            document.getElementById('btnAddEmployeeText').innerText = t.btnAddEmployeeText;
+            document.getElementById('btnOpenPdfFolderText').innerText = t.btnOpenPdfFolderText;
+
+            // Table headers
+            document.getElementById('thId').innerText = t.thId;
+            document.getElementById('thName').innerText = t.thName;
+            document.getElementById('thBasic').innerText = t.thBasic;
+            document.getElementById('thAttended').innerText = t.thAttended;
+            document.getElementById('thVacations').innerText = t.thVacations;
+            document.getElementById('thFridayOt').innerText = t.thFridayOt;
+            document.getElementById('thDeductions').innerText = t.thDeductions;
+            document.getElementById('thNet').innerText = t.thNet;
+            document.getElementById('thAdvanceBal').innerText = t.thAdvanceBal;
+            document.getElementById('thActions').innerText = t.thActions;
+
+            // Modal headers & section labels
+            document.getElementById('modalTitle').innerText = t.modalTitle;
+            document.getElementById('secPersonalInfo').innerText = t.secPersonalInfo;
+            document.getElementById('lblMName').innerText = t.lblMName;
+            document.getElementById('lblMBasicSalary').innerText = t.lblMBasicSalary;
+            document.getElementById('lblMWorkHours').innerText = t.lblMWorkHours;
+            document.getElementById('lblMEmpId').innerText = t.lblMEmpId;
+
+            document.getElementById('secAttendance').innerText = t.secAttendance;
+            document.getElementById('lblMAttendedDays').innerText = t.lblMAttendedDays;
+            document.getElementById('lblMAttendedHint').innerText = t.lblMAttendedHint;
+            document.getElementById('lblMVacationDays').innerText = t.lblMVacationDays;
+            document.getElementById('lblMVacationHint').innerText = t.lblMVacationHint;
+            document.getElementById('lblMAbsenceDays').innerText = t.lblMAbsenceDays;
+            document.getElementById('lblMAbsenceHint').innerText = t.lblMAbsenceHint;
+            document.getElementById('lblMFridayDays').innerText = t.lblMFridayDays;
+            document.getElementById('lblMFridayHint').innerText = t.lblMFridayHint;
+            document.getElementById('lblMOvertimeHours').innerText = t.lblMOvertimeHours;
+            document.getElementById('lblMOvertimeHint').innerText = t.lblMOvertimeHint;
+            document.getElementById('lblMBonus').innerText = t.lblMBonus;
+            document.getElementById('lblMBonusHint').innerText = t.lblMBonusHint;
+
+            document.getElementById('secAdvances').innerText = t.secAdvances;
+            document.getElementById('lblMTotalAdvance').innerText = t.lblMTotalAdvance;
+            document.getElementById('lblMTotalAdvanceHint').innerText = t.lblMTotalAdvanceHint;
+            document.getElementById('lblMAdvance').innerText = t.lblMAdvance;
+            document.getElementById('lblMAdvanceHint').innerText = t.lblMAdvanceHint;
+            document.getElementById('lblMRemainingAdvance').innerText = t.lblMRemainingAdvance;
+            document.getElementById('lblMRemainingAdvanceHint').innerText = t.lblMRemainingAdvanceHint;
+            document.getElementById('lblMDeduction').innerText = t.lblMDeduction;
+            document.getElementById('warnAdvanceTitle').innerText = t.warnAdvanceTitle;
+
+            // Preview summary card
+            document.getElementById('lblPrevDayRate').innerText = t.lblPrevDayRate;
+            document.getElementById('lblPrevHourRate').innerText = t.lblPrevHourRate;
+            document.getElementById('lblPrevBaseAttendance').innerText = t.lblPrevBaseAttendance;
+            document.getElementById('lblPrevRemainingAdvance').innerText = t.lblPrevRemainingAdvance;
+            document.getElementById('lblPrevNetSalary').innerText = t.lblPrevNetSalary;
+
+            // Punches table
+            document.getElementById('punchesTitle').innerText = t.punchesTitle;
+            document.getElementById('thDate').innerText = t.thDate;
+            document.getElementById('thFriday').innerText = t.thFriday;
+            document.getElementById('thCheckIn').innerText = t.thCheckIn;
+            document.getElementById('thCheckOut').innerText = t.thCheckOut;
+            document.getElementById('thHours').innerText = t.thHours;
+            document.getElementById('thPunches').innerText = t.thPunches;
+
+            // Modal Footers
+            document.getElementById('btnPdfModalFooter').innerText = t.btnPdfModalFooter;
+            document.getElementById('btnPreviewModalFooter').innerText = t.btnPreviewModalFooter;
+            document.getElementById('btnCancelModal').innerText = t.btnCancel;
+            document.getElementById('btnSaveModal').innerText = t.btnSaveModal;
+
+            // Add Emp Modal
+            document.getElementById('addModalTitle').innerText = t.addModalTitle;
+            document.getElementById('lblAddName').innerText = t.lblAddName;
+            document.getElementById('addName').placeholder = t.placeholderAddName;
+            document.getElementById('lblAddEmpId').innerText = t.lblAddEmpId;
+            document.getElementById('addEmpId').placeholder = t.placeholderAddEmpId;
+            document.getElementById('lblAddSalary').innerText = t.lblAddSalary;
+            document.getElementById('addSalary').placeholder = t.placeholderAddSalary;
+            document.getElementById('lblAddHours').innerText = t.lblAddHours;
+            document.getElementById('addHours').placeholder = t.placeholderAddHours;
+            document.getElementById('lblAddTotalAdvance').innerText = t.lblAddTotalAdvance;
+            document.getElementById('addTotalAdvance').placeholder = t.placeholderAddTotalAdvance;
+            document.getElementById('lblAddAttended').innerText = t.lblAddAttended;
+            document.getElementById('btnCancelAddEmp').innerText = t.btnCancel;
+            document.getElementById('btnSaveAddEmp').innerText = t.btnSaveAddEmp;
+
+            // Re-render list & active calculations if open
+            if(payrollEmployees && payrollEmployees.length > 0) {
+                renderEmployeeList(payrollEmployees);
+            }
+            if(activeEditEmpId) {
+                calculateModalLive();
+            }
+        }
+
+        function toggleLanguage() {
+            const nextLang = (currentLang === 'ar' ? 'en' : 'ar');
+            applyLanguage(nextLang);
+        }
+
+        // عند تحميل الصفحة: استرجاع الأرشيف وتطبيق اللغة
+        document.addEventListener('DOMContentLoaded', () => {
+            applyLanguage(currentLang);
+            fetchHistoryList(true);
+        });
+
+        function fetchHistoryList(autoLoadLatest = false) {
+            fetch("/get_history")
+            .then(res => res.json())
+            .then(data => {
+                const sheets = data.sheets || [];
+                const historyWrap = document.getElementById("historyWrap");
+                const historySelect = document.getElementById("historySelect");
+                const t = TRANSLATIONS[currentLang];
+
+                if(sheets.length > 0) {
+                    historyWrap.style.display = "flex";
+                    historySelect.innerHTML = `<option value="">${t.historySelectDefault}</option>`;
+                    sheets.forEach(s => {
+                        const opt = document.createElement("option");
+                        opt.value = s.month_name;
+                        opt.innerText = `${s.month_name} (${s.total_logs} ${currentLang === 'en' ? 'logs' : 'سجل'})`;
+                        historySelect.appendChild(opt);
+                    });
+
+                    // تحميل أحدث شهر تلقائياً
+                    if(autoLoadLatest && sheets.length > 0) {
+                        loadMonthByName(sheets[0].month_name);
+                    }
+                } else {
+                    historyWrap.style.display = "none";
+                }
+            })
+            .catch(err => console.log("الأرشيف فارغ أو قيد الإنشاء:", err));
+        }
+
+        function onHistoryMonthChange() {
+            const val = document.getElementById("historySelect").value;
+            if(val) {
+                loadMonthByName(val);
+            }
+        }
+
+        function loadMonthByName(monthName) {
+            fetch(`/load_month?month=${encodeURIComponent(monthName)}`)
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) {
+                    alert(data.error);
+                    return;
+                }
+                renderPayroll(data);
+                document.getElementById("historySelect").value = monthName;
+            })
+            .catch(err => alert("Error loading month: " + err));
+        }
+
+        // السحب والإفلات والرفع
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById("dropzone").classList.add("dragover");
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            document.getElementById("dropzone").classList.remove("dragover");
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById("dropzone").classList.remove("dragover");
+            const files = e.dataTransfer.files;
+            if(files.length > 0) uploadFile(files[0]);
+        }
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            if(files.length > 0) uploadFile(files[0]);
+        }
+
+        function uploadFile(file) {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const dropzone = document.getElementById("dropzone");
+            dropzone.style.opacity = "0.5";
+            dropzone.style.pointerEvents = "none";
+
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                dropzone.style.opacity = "1";
+                dropzone.style.pointerEvents = "auto";
+                if(data.error) {
+                    alert("Error: " + data.error);
+                    return;
+                }
+                renderPayroll(data);
+                fetchHistoryList(false);
+            })
+            .catch(err => {
+                dropzone.style.opacity = "1";
+                dropzone.style.pointerEvents = "auto";
+                alert("Upload error: " + err);
+            });
+        }
+
+        function renderPayroll(data) {
+            currentMonthMeta = data.meta;
+            payrollEmployees = data.employees;
+
+            // إظهار شريط الأرشيف
+            const banner = document.getElementById("archiveBanner");
+            banner.style.display = "flex";
+            document.getElementById("bannerMonthName").innerText = currentMonthMeta.month_name;
+            document.getElementById("bannerDaysLogs").innerText = `(${currentMonthMeta.days_in_month || 30} ${currentLang === 'en' ? 'days' : 'يوم'} | ${currentMonthMeta.total_logs || 0} ${currentLang === 'en' ? 'logs' : 'سجل'})`;
+
+            // إخفاء كارت الرفع وإظهار الإحصائيات والجدول
+            document.getElementById("step1Card").style.display = "none";
+            document.getElementById("statsGrid").style.display = "grid";
+            document.getElementById("step2Card").style.display = "block";
+
+            renderEmployeeList(payrollEmployees);
+        }
+
+        function renderEmployeeList(employees) {
+            const tbody = document.getElementById("payrollTableBody");
+            tbody.innerHTML = "";
+
+            let totalNet = 0;
+            let totalBase = 0;
+            let totalAdvDeducted = 0;
+            let totalOvertimeExtra = 0;
+            const t = TRANSLATIONS[currentLang];
+
+            employees.forEach(emp => {
+                const net = parseFloat(emp.net_salary) || 0;
+                const base = parseFloat(emp.basic_salary) || 0;
+                const advDeducted = parseFloat(emp.advance) || 0;
+                const otAmount = (parseFloat(emp.overtime_amount) || 0) + (parseFloat(emp.friday_extra_amount) || 0);
+
+                totalNet += net;
+                totalBase += base;
+                totalAdvDeducted += advDeducted;
+                totalOvertimeExtra += otAmount;
+
+                const tr = document.createElement("tr");
+
+                // حساب رصيد السلفة والمتبقي
+                const totalAdv = parseFloat(emp.total_advance) || 0;
+                const remAdv = emp.remaining_advance !== undefined ? parseFloat(emp.remaining_advance) : (totalAdv - advDeducted);
+
+                // حالة السلفة كبادج أنيق
+                let advanceBadgeHtml = "";
+                if (remAdv < 0) {
+                    advanceBadgeHtml = `<span class="pg-badge pg-badge-red" title="تم خصم قسط أكبر من السلفة بموافقة المدير">⚠️ ${t.badgeNegativeAdvance}: ${remAdv.toFixed(2)} ${t.currency}</span>`;
+                } else if (remAdv > 0) {
+                    advanceBadgeHtml = `<span class="pg-badge pg-badge-amber">${t.badgeRemainingAdvance}: ${remAdv.toFixed(2)} ${t.currency}</span>`;
+                } else if (totalAdv > 0 && remAdv === 0) {
+                    advanceBadgeHtml = `<span class="pg-badge pg-badge-green">${t.badgeClearedAdvance} ✓</span>`;
+                } else {
+                    advanceBadgeHtml = `<span class="pg-badge pg-badge-slate">-</span>`;
+                }
+
+                // الحروف الأولى للاسم Avatar
+                const initials = emp.name ? emp.name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase() : '--';
+
+                tr.innerHTML = `
+                    <td class="mono-num" style="color: var(--pg-slate-500); font-weight: 700;">#${emp.emp_id}</td>
+                    <td>
+                        <div class="emp-col">
+                            <div class="emp-avatar">${initials}</div>
+                            <div>
+                                <div class="emp-name-text">${emp.name}</div>
+                                ${emp.is_new ? `<span class="pg-badge pg-badge-amber" style="font-size:10px;">${t.badgeNew}</span>` : ''}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="mono-num" style="font-weight: 700;">${base.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td><span class="pg-badge pg-badge-green">${emp.attended_days || 0}</span></td>
+                    <td><span class="pg-badge pg-badge-slate">${emp.vacation_days || 0}</span></td>
+                    <td>
+                        ${emp.friday_days > 0 ? `<span class="pg-badge pg-badge-blue">${emp.friday_days} ${t.badgeFridayExtra}</span> ` : ''}
+                        ${emp.overtime_hours > 0 ? `<span class="pg-badge pg-badge-cyan">${emp.overtime_hours} ${t.badgeOvertime}</span>` : ''}
+                        ${emp.bonus > 0 ? `<span class="pg-badge pg-badge-green">+${emp.bonus} ${t.badgeBonus}</span>` : ''}
+                        ${(!emp.friday_days && !emp.overtime_hours && !emp.bonus) ? '-' : ''}
+                    </td>
+                    <td>
+                        ${advDeducted > 0 ? `<span class="pg-badge pg-badge-amber">-${advDeducted} ${t.badgeAdvanceDeducted}</span> ` : ''}
+                        ${emp.deduction > 0 ? `<span class="pg-badge pg-badge-red">-${emp.deduction} ${t.badgeDeduction}</span>` : ''}
+                        ${(!advDeducted && !emp.deduction) ? '-' : ''}
+                    </td>
+                    <td>
+                        <span class="net-salary-pill mono-num">${net.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${t.currency}</span>
+                    </td>
+                    <td>${advanceBadgeHtml}</td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="btn-action-icon" onclick="openEditModal('${emp.emp_id}')" title="${t.btnEditTip}">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                            </button>
+                            <button class="btn-action-icon pdf-btn" onclick="printEmployeePDF('${emp.emp_id}')" title="${t.btnPdfTip}">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // تحديث كروت الإحصائيات
+            document.getElementById("statNetSalaries").innerText = totalNet.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById("statBaseSalaries").innerText = totalBase.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById("statTotalAdvances").innerText = totalAdvDeducted.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById("statTotalOvertime").innerText = totalOvertimeExtra.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById("statEmployeeCount").innerText = employees.length;
+        }
+
+        function onSearchInput() {
+            const query = document.getElementById("searchInput").value.toLowerCase().trim();
+            if(!query) {
+                renderEmployeeList(payrollEmployees);
+                return;
+            }
+            const filtered = payrollEmployees.filter(e => 
+                (e.name && e.name.toLowerCase().includes(query)) ||
+                (e.emp_id && String(e.emp_id).toLowerCase().includes(query))
+            );
+            renderEmployeeList(filtered);
+        }
+
+        function onFridayFactorChange() {
+            const factor = parseFloat(document.getElementById("fridayFactorInput").value) || 2.0;
+            const daysInMonth = currentMonthMeta.days_in_month || 30;
+
+            payrollEmployees.forEach(emp => {
+                const dayRate = emp.basic_salary / daysInMonth;
+                const hourRate = emp.work_hours > 0 ? (dayRate / emp.work_hours) : 0;
+                const paidDays = emp.attended_days + emp.vacation_days;
+                const basePay = paidDays * dayRate;
+                const fridayExtra = emp.friday_days * Math.max(0, factor - 1) * dayRate;
+                const overtimePay = emp.overtime_hours * hourRate;
+
+                emp.day_rate = dayRate;
+                emp.hour_rate = hourRate;
+                emp.base_attendance_pay = basePay;
+                emp.friday_extra_amount = fridayExtra;
+                emp.overtime_amount = overtimePay;
+                emp.net_salary = Math.max(0, basePay + fridayExtra + overtimePay + (emp.bonus || 0) - (emp.advance || 0) - (emp.deduction || 0));
+            });
+
+            renderEmployeeList(payrollEmployees);
+        }
+
+        // فتح نافذة التعديل
+        function openEditModal(empId) {
+            const emp = payrollEmployees.find(e => e.emp_id == empId);
+            if(!emp) return;
+            activeEditEmpId = empId;
+            const t = TRANSLATIONS[currentLang];
+
+            // الحروف الأولى للاسم
+            const initials = emp.name ? emp.name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase() : '--';
+            document.getElementById("mAvatarInitials").innerText = initials;
+            document.getElementById("mEmpSubHeader").innerText = `${emp.name} — ID: ${emp.emp_id}`;
+
+            document.getElementById("mName").value = emp.name || "";
+            document.getElementById("mBasicSalary").value = emp.basic_salary || 0;
+            document.getElementById("mWorkHours").value = emp.work_hours || 10;
+            document.getElementById("mEmpId").value = emp.emp_id || "";
+
+            document.getElementById("mAttendedDays").value = emp.attended_days || 0;
+            document.getElementById("mVacationDays").value = emp.vacation_days || 0;
+            document.getElementById("mAbsenceDays").value = emp.absence_days || 0;
+            document.getElementById("mFridayDays").value = emp.friday_days || 0;
+            document.getElementById("mOvertimeHours").value = emp.overtime_hours || 0;
+            document.getElementById("mBonus").value = emp.bonus || 0;
+
+            // حقول السلف
+            const totalAdv = emp.total_advance || 0;
+            const advDeducted = emp.advance || 0;
+            const remAdv = emp.remaining_advance !== undefined ? emp.remaining_advance : (totalAdv - advDeducted);
+
+            document.getElementById("mTotalAdvance").value = totalAdv;
+            document.getElementById("mAdvance").value = advDeducted;
+            document.getElementById("mRemainingAdvance").value = remAdv;
+
+            document.getElementById("mDeduction").value = emp.deduction || 0;
+
+            // ملء جدول البصمات اليومية
+            const tbody = document.getElementById("punchesTableBody");
+            tbody.innerHTML = "";
+            if(emp.daily_details && emp.daily_details.length > 0) {
+                emp.daily_details.forEach(d => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${d.date}</td>
+                        <td>${d.is_friday ? `<span style="color:#0369a1; font-weight:bold;">${t.fridayYes}</span>` : t.fridayNo}</td>
+                        <td>${d.check_in}</td>
+                        <td>${d.check_out}</td>
+                        <td>${d.worked_hours} ${t.hoursUnit}</td>
+                        <td>${d.punches_count}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                document.getElementById("punchesDetailsBox").style.display = "block";
+            } else {
+                document.getElementById("punchesDetailsBox").style.display = "none";
+            }
+
+            calculateModalLive();
+            document.getElementById("editModal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
+
+        // الحساب اللحظي المباشر أثناء الكتابة داخل المودال
+        function calculateModalLive() {
+            const t = TRANSLATIONS[currentLang];
+            const salary = parseFloat(document.getElementById("mBasicSalary").value) || 0;
+            const hours = parseFloat(document.getElementById("mWorkHours").value) || 10;
+            const attended = parseFloat(document.getElementById("mAttendedDays").value) || 0;
+            const vacations = parseFloat(document.getElementById("mVacationDays").value) || 0;
+            const fridays = parseFloat(document.getElementById("mFridayDays").value) || 0;
+            const overtime = parseFloat(document.getElementById("mOvertimeHours").value) || 0;
+            const bonus = parseFloat(document.getElementById("mBonus").value) || 0;
+
+            // حساب السلف والمتبقي
+            const totalAdvance = parseFloat(document.getElementById("mTotalAdvance").value) || 0;
+            const advance = parseFloat(document.getElementById("mAdvance").value) || 0;
+            const remainingAdvance = totalAdvance - advance;
+            document.getElementById("mRemainingAdvance").value = remainingAdvance;
+
+            // التحذير اللوني عند تجاوز الخصم للرصيد
+            const warnBox = document.getElementById("advanceWarningBox");
+            const remInput = document.getElementById("mRemainingAdvance");
+            if (advance > totalAdvance) {
+                warnBox.style.display = "block";
+                document.getElementById("warnAdvanceVal").innerText = advance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+                document.getElementById("warnTotalVal").innerText = totalAdvance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+                document.getElementById("warnRemVal").innerText = remainingAdvance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                remInput.style.backgroundColor = "#fee2e2";
+                remInput.style.color = "#dc2626";
+                remInput.style.borderColor = "#ef4444";
+            } else {
+                warnBox.style.display = "none";
+                remInput.style.backgroundColor = "#f8fafc";
+                remInput.style.color = "#15803d";
+                remInput.style.borderColor = "#86efac";
+            }
+
+            const deduction = parseFloat(document.getElementById("mDeduction").value) || 0;
+
+            const daysInMonth = currentMonthMeta.days_in_month || 30;
+            const dayRate = salary / daysInMonth;
+            const hourRate = hours > 0 ? (dayRate / hours) : 0;
+            const factor = parseFloat(document.getElementById("fridayFactorInput").value) || 2.0;
+
+            const paidDays = attended + vacations;
+            const basePay = paidDays * dayRate;
+            const fridayExtra = fridays * Math.max(0, factor - 1) * dayRate;
+            const overtimePay = overtime * hourRate;
+            const net = Math.max(0, basePay + fridayExtra + overtimePay + bonus - advance - deduction);
+
+            document.getElementById("prevDayRate").innerText = dayRate.toFixed(2);
+            document.getElementById("prevHourRate").innerText = hourRate.toFixed(2);
+            document.getElementById("prevBaseAttendance").innerText = (basePay + fridayExtra).toFixed(2);
+            
+            const remAdvColor = remainingAdvance < 0 ? "#f43f5e" : (remainingAdvance > 0 ? "#f59e0b" : "#34d399");
+            const prevRemAdvEl = document.getElementById("prevRemainingAdvance");
+            prevRemAdvEl.style.color = remAdvColor;
+            prevRemAdvEl.innerText = remainingAdvance.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " " + t.currency + (remainingAdvance < 0 ? (" " + t.negativeNote) : "");
+            
+            document.getElementById("prevNetSalary").innerText = net.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + t.currency;
+        }
+
+        // حفظ التعديلات في الموظف
+        function saveModalChanges() {
+            const emp = payrollEmployees.find(e => e.emp_id == activeEditEmpId);
+            if(!emp) return;
+            const t = TRANSLATIONS[currentLang];
+
+            const totalAdvance = parseFloat(document.getElementById("mTotalAdvance").value) || 0;
+            const advance = parseFloat(document.getElementById("mAdvance").value) || 0;
+            const remainingAdvance = totalAdvance - advance;
+
+            // التحقق وتأكيد موافقة المدير إذا كان الخصم أكبر من السلفة
+            if (advance > totalAdvance) {
+                const diff = (advance - totalAdvance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const confirmMsg = t.confirmAdvanceWarningModal
+                    .replace('{adv}', advance.toLocaleString())
+                    .replace('{tot}', totalAdvance.toLocaleString())
+                    .replace('{name}', emp.name)
+                    .replace('{rem}', remainingAdvance.toLocaleString())
+                    .replace('{diff}', diff);
+                
+                if (!confirm(confirmMsg)) {
+                    document.getElementById("mAdvance").focus();
+                    return;
+                }
+            }
+
+            emp.name = document.getElementById("mName").value.trim() || emp.name;
+            emp.basic_salary = parseFloat(document.getElementById("mBasicSalary").value) || 0;
+            emp.work_hours = parseFloat(document.getElementById("mWorkHours").value) || 10;
+            emp.vacation_days = parseFloat(document.getElementById("mVacationDays").value) || 0;
+            emp.absence_days = parseFloat(document.getElementById("mAbsenceDays").value) || 0;
+            emp.friday_days = parseFloat(document.getElementById("mFridayDays").value) || 0;
+            emp.overtime_hours = parseFloat(document.getElementById("mOvertimeHours").value) || 0;
+            emp.bonus = parseFloat(document.getElementById("mBonus").value) || 0;
+
+            emp.total_advance = totalAdvance;
+            emp.advance = advance;
+            emp.remaining_advance = remainingAdvance;
+            emp.deduction = parseFloat(document.getElementById("mDeduction").value) || 0;
+            emp.is_new = false;
+
+            // إعادة حساب الصافي
+            const daysInMonth = currentMonthMeta.days_in_month || 30;
+            const dayRate = emp.basic_salary / daysInMonth;
+            const hourRate = emp.work_hours > 0 ? (dayRate / emp.work_hours) : 0;
+            const factor = parseFloat(document.getElementById("fridayFactorInput").value) || 2.0;
+            const paidDays = emp.attended_days + emp.vacation_days;
+            const basePay = paidDays * dayRate;
+            const fridayExtra = emp.friday_days * Math.max(0, factor - 1) * dayRate;
+            const overtimePay = emp.overtime_hours * hourRate;
+            emp.day_rate = dayRate;
+            emp.hour_rate = hourRate;
+            emp.base_attendance_pay = basePay;
+            emp.friday_extra_amount = fridayExtra;
+            emp.overtime_amount = overtimePay;
+            emp.net_salary = Math.max(0, basePay + fridayExtra + overtimePay + emp.bonus - emp.advance - emp.deduction);
+
+            // إرسال الحفظ لقاعدة البيانات
+            fetch("/save_employee", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    month_name: currentMonthMeta.month_name,
+                    emp: emp
+                })
+            });
+
+            closeModal();
+            renderEmployeeList(payrollEmployees);
+        }
+
+        // إضافة موظف يدوي
+        function openAddEmployeeModal() {
+            document.getElementById("addName").value = "";
+            document.getElementById("addEmpId").value = "";
+            document.getElementById("addSalary").value = "";
+            document.getElementById("addHours").value = "10";
+            document.getElementById("addTotalAdvance").value = "0";
+            document.getElementById("addAttended").value = currentMonthMeta.days_in_month ? currentMonthMeta.days_in_month - 4 : 26;
+            document.getElementById("addEmpModal").style.display = "flex";
+        }
+
+        function closeAddEmpModal() {
+            document.getElementById("addEmpModal").style.display = "none";
+        }
+
+        function saveManualEmployee() {
+            const t = TRANSLATIONS[currentLang];
+            const name = document.getElementById("addName").value.trim();
+            const empId = document.getElementById("addEmpId").value.trim();
+            const salary = parseFloat(document.getElementById("addSalary").value) || 0;
+            const hours = parseFloat(document.getElementById("addHours").value) || 10;
+            const totalAdv = parseFloat(document.getElementById("addTotalAdvance").value) || 0;
+            const attended = parseFloat(document.getElementById("addAttended").value) || 0;
+
+            if(!name || !empId) {
+                alert(t.alertFillEmpFields);
+                return;
+            }
+
+            const daysInMonth = currentMonthMeta.days_in_month || 30;
+            const dayRate = salary / daysInMonth;
+            const hourRate = dayRate / hours;
+            const net = attended * dayRate;
+
+            const newEmp = {
+                emp_id: empId,
+                name: name,
+                is_new: false,
+                basic_salary: salary,
+                work_hours: hours,
+                attended_days: attended,
+                vacation_days: 0,
+                absence_days: Math.max(0, daysInMonth - attended),
+                friday_days: 0,
+                overtime_hours: 0,
+                bonus: 0,
+                total_advance: totalAdv,
+                advance: 0,
+                remaining_advance: totalAdv,
+                deduction: 0,
+                day_rate: dayRate,
+                hour_rate: hourRate,
+                net_salary: net,
+                daily_details: []
+            };
+
+            payrollEmployees.push(newEmp);
+
+            fetch("/save_employee", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    month_name: currentMonthMeta.month_name,
+                    emp: newEmp
+                })
+            });
+
+            closeAddEmpModal();
+            renderEmployeeList(payrollEmployees);
+        }
+
+        function exportToExcel() {
+            const t = TRANSLATIONS[currentLang];
+            if(!payrollEmployees || payrollEmployees.length === 0) {
+                alert(t.alertSelectMonthExport);
+                return;
+            }
+            window.location.href = `/export_excel?month=${encodeURIComponent(currentMonthMeta.month_name || "الشهر")}&lang=${currentLang}`;
+        }
+
+        function startNewMonth() {
+            document.getElementById("archiveBanner").style.display = "none";
+            document.getElementById("step1Card").style.display = "block";
+            document.getElementById("statsGrid").style.display = "none";
+            document.getElementById("step2Card").style.display = "none";
+            document.getElementById("fileInput").value = "";
+            document.getElementById("historySelect").value = "";
+            payrollEmployees = [];
+            currentMonthMeta = {};
+        }
+
+        // حفظ الكشف بالكامل في قاعدة البيانات
+        function saveEntirePayroll() {
+            const t = TRANSLATIONS[currentLang];
+            if(!payrollEmployees || payrollEmployees.length === 0) {
+                alert(t.alertNoEmpToSave);
+                return;
+            }
+
+            // فحص هل يوجد أي موظف تجاوز قسط السلفة رصيده
+            const exceededEmps = payrollEmployees.filter(e => (parseFloat(e.advance) || 0) > (parseFloat(e.total_advance) || 0));
+            if (exceededEmps.length > 0) {
+                let listText = exceededEmps.map(e => `• ${e.name}: ${currentLang === 'en' ? 'deducted' : 'مخصوم'} (${e.advance} ${t.currency}) ${currentLang === 'en' ? 'from balance' : 'من رصيد'} (${e.total_advance} ${t.currency}) -> ${currentLang === 'en' ? 'negative remaining' : 'المتبقي بالسالب'} (${(parseFloat(e.total_advance)||0) - (parseFloat(e.advance)||0)} ${t.currency})`).join('\n');
+                const confirmMsg = t.confirmAdvanceWarningSaveAll
+                    .replace('{count}', exceededEmps.length)
+                    .replace('{list}', listText);
+                if (!confirm(confirmMsg)) {
+                    return;
+                }
+            }
+
+            const factor = parseFloat(document.getElementById("fridayFactorInput").value) || 2.0;
+
+            fetch("/save_all", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    month_name: currentMonthMeta.month_name,
+                    employees: payrollEmployees,
+                    friday_factor: factor
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) {
+                    alert("Error: " + data.error);
+                    return;
+                }
+                showToast(t.toastSaveAllSuccess.replace('{month}', currentMonthMeta.month_name).replace('{count}', data.count));
+                fetchHistoryList(false);
+            })
+            .catch(err => alert("Error: " + err));
+        }
+
+        // استخراج وطباعة تقرير PDF للموظف المفتوح حالياً في المودال
+        function printActiveEmployeePDF() {
+            const emp = payrollEmployees.find(e => e.emp_id == activeEditEmpId);
+            if(!emp) return;
+            const t = TRANSLATIONS[currentLang];
+
+            const totalAdv = parseFloat(document.getElementById("mTotalAdvance").value) || 0;
+            const advDeducted = parseFloat(document.getElementById("mAdvance").value) || 0;
+            const remainingAdv = totalAdv - advDeducted;
+
+            if (advDeducted > totalAdv) {
+                const diff = (advDeducted - totalAdv).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const confirmMsg = t.confirmAdvanceWarningPdf
+                    .replace('{adv}', advDeducted.toLocaleString())
+                    .replace('{tot}', totalAdv.toLocaleString())
+                    .replace('{rem}', remainingAdv.toLocaleString())
+                    .replace('{diff}', diff);
+                if (!confirm(confirmMsg)) {
+                    return;
+                }
+            }
+
+            // أخذ القيم اللحظية الحالية من الحقول المفتوحة
+            emp.name = document.getElementById("mName").value.trim() || emp.name;
+            emp.basic_salary = parseFloat(document.getElementById("mBasicSalary").value) || 0;
+            emp.work_hours = parseFloat(document.getElementById("mWorkHours").value) || 10;
+            emp.vacation_days = parseFloat(document.getElementById("mVacationDays").value) || 0;
+            emp.absence_days = parseFloat(document.getElementById("mAbsenceDays").value) || 0;
+            emp.friday_days = parseFloat(document.getElementById("mFridayDays").value) || 0;
+            emp.overtime_hours = parseFloat(document.getElementById("mOvertimeHours").value) || 0;
+            emp.bonus = parseFloat(document.getElementById("mBonus").value) || 0;
+            emp.total_advance = totalAdv;
+            emp.advance = advDeducted;
+            emp.remaining_advance = remainingAdv;
+            emp.deduction = parseFloat(document.getElementById("mDeduction").value) || 0;
+
+            const daysInMonth = currentMonthMeta.days_in_month || 30;
+            const dayRate = emp.basic_salary / daysInMonth;
+            const hourRate = emp.work_hours > 0 ? (dayRate / emp.work_hours) : 0;
+            const factor = parseFloat(document.getElementById("fridayFactorInput").value) || 2.0;
+            const paidDays = emp.attended_days + emp.vacation_days;
+            const basePay = paidDays * dayRate;
+            const fridayExtra = emp.friday_days * Math.max(0, factor - 1) * dayRate;
+            const overtimePay = emp.overtime_hours * hourRate;
+            emp.day_rate = dayRate;
+            emp.hour_rate = hourRate;
+            emp.base_attendance_pay = basePay;
+            emp.friday_extra_amount = fridayExtra;
+            emp.overtime_amount = overtimePay;
+            emp.net_salary = Math.max(0, basePay + fridayExtra + overtimePay + emp.bonus - emp.advance - emp.deduction);
+
+            showToast(t.toastPdfGenerating.replace('{name}', emp.name));
+
+            fetch("/export_employee_pdf", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    emp_id: emp.emp_id,
+                    month_name: currentMonthMeta.month_name,
+                    emp: emp,
+                    friday_factor: factor,
+                    lang: currentLang
+                })
+            })
+            .then(r => r.json())
+            .then(res => {
+                if(res.status === "success") {
+                    showToast(t.toastPdfSuccess.replace('{filename}', res.filename));
+                } else {
+                    showToast(t.toastPdfError + (res.error || "Unknown error"));
+                }
+            })
+            .catch(err => {
+                showToast("Connection error: " + err);
+            });
+        }
+
+        // استخراج تقرير PDF لموظف بالضغط على زر القائمة مباشرة
+        function printEmployeePDF(empId) {
+            const emp = payrollEmployees.find(e => e.emp_id == empId);
+            if(!emp) return;
+            const t = TRANSLATIONS[currentLang];
+
+            showToast(t.toastPdfGenerating.replace('{name}', emp.name));
+            const factor = parseFloat(document.getElementById("fridayFactorInput").value) || 2.0;
+
+            fetch("/export_employee_pdf", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    emp_id: emp.emp_id,
+                    month_name: currentMonthMeta.month_name,
+                    emp: emp,
+                    friday_factor: factor,
+                    lang: currentLang
+                })
+            })
+            .then(r => r.json())
+            .then(res => {
+                if(res.status === "success") {
+                    showToast(t.toastPdfSuccess.replace('{filename}', res.filename));
+                } else {
+                    showToast(t.toastPdfError + (res.error || "Unknown error"));
+                }
+            })
+            .catch(err => {
+                showToast("Connection error: " + err);
+            });
+        }
+
+        // معاينة وطباعة قسيمة الراتب في نافذة منفصلة
+        function previewActiveEmployeeSlip() {
+            if(!activeEditEmpId) return;
+            const month = encodeURIComponent(currentMonthMeta.month_name || "الشهر");
+            window.open(`/employee_slip/${activeEditEmpId}?month=${month}&lang=${currentLang}`, '_blank', 'width=920,height=980,scrollbars=yes');
+        }
+
+        // فتح مجلد تقارير الـ PDF
+        function openPdfReportsFolder() {
+            const t = TRANSLATIONS[currentLang];
+            fetch("/open_pdf_folder")
+            .then(r => r.json())
+            .then(res => {
+                showToast(t.toastOpenFolderSuccess);
+            })
+            .catch(err => showToast(t.toastOpenFolderFail));
+        }
+
+        function showToast(msg) {
+            let toast = document.getElementById("toastMessage");
+            let text = document.getElementById("toastText");
+            text.innerText = msg;
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 4500);
+        }
+    </script>
+</body>
+</html>
