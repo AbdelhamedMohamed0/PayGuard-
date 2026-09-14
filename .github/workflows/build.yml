@@ -47,7 +47,9 @@ jobs:
         if: matrix.platform == 'linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libgirepository1.0-dev gir1.2-webkit2-4.0 file wget desktop-file-utils
+          sudo apt-get install -y libgtk-3-dev libgirepository1.0-dev file wget desktop-file-utils
+          sudo apt-get install -y gir1.2-webkit2-4.1 || sudo apt-get install -y gir1.2-webkit2-4.0 || true
+          sudo apt-get install -y libfuse2 || sudo apt-get install -y libfuse2t64 || true
 
       - name: Install Python Dependencies
         run: |
@@ -77,6 +79,7 @@ jobs:
           New-Item -ItemType Directory -Path "dist_package" -Force
           Copy-Item "dist\PayGuard.exe" "dist_package\PayGuard-Windows-x64.exe"
           Copy-Item "sample_data\sample_punches.txt" "dist_package\sample_punches.txt" -ErrorAction SilentlyContinue
+          Get-ChildItem dist_package
 
       - name: Package macOS Application
         if: matrix.platform == 'macos'
@@ -84,13 +87,14 @@ jobs:
           mkdir -p dist_package
           cd dist
           if [ -d "PayGuard.app" ]; then
-            zip -r "../dist_package/PayGuard-macOS-Universal.zip" PayGuard.app
+            zip -r -y "../dist_package/PayGuard-macOS-Universal.zip" PayGuard.app
           fi
           if [ -f "PayGuard" ]; then
             cp PayGuard "../dist_package/PayGuard-macOS-cli"
           fi
           cd ..
           cp "sample_data/sample_punches.txt" dist_package/ || true
+          ls -lh dist_package/
 
       - name: Package Linux Binary & AppImage
         if: matrix.platform == 'linux'
@@ -130,13 +134,13 @@ jobs:
           EOF
           chmod +x AppDir/AppRun
 
-          # Download appimagetool and generate AppImage
-          wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool || true
-          if [ -f "appimagetool" ]; then
-            chmod +x appimagetool
-            sed -i 's|AI |   |' appimagetool || true
-            ./appimagetool -n --appimage-extract-and-run AppDir "dist_package/PayGuard-Linux-x86_64.AppImage" || true
-          fi
+          # Download appimagetool and generate AppImage using extracted tool (FUSE-independent)
+          wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool
+          chmod +x appimagetool
+          ./appimagetool --appimage-extract
+          ARCH=x86_64 ./squashfs-root/AppRun -n AppDir "dist_package/PayGuard-Linux-x86_64.AppImage"
+          chmod +x dist_package/PayGuard-Linux-x86_64.AppImage
+          ls -lh dist_package/
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
@@ -186,6 +190,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ github.ref_name }}
           name: PayGuard ${{ github.ref_name }}
           draft: false
