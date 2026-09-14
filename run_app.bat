@@ -1,10 +1,12 @@
 @echo off
 chcp 65001 > nul
-echo تشغيل نظام PayGuard لإدارة المرتبات وحضور البصمة...
+echo Starting PayGuard - Smart Payroll & Biometric Attendance System...
 python app.py
 if %errorlevel% neq 0 (
     echo.
-    echo حدث خطأ أثناء التشغيل. تأكد من تثبيت المكتبات أولاً بتشغيل build_exe.bat أو:
+    echo [ERROR] An error occurred while launching PayGuard.
+    echo Please make sure dependencies are installed:
     echo pip install -r requirements.txt
     pause
 )
+

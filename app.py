@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-app.py - نقطة الدخول الرئيسية لنظام كشف المرتبات الشهري
-يربط بين قاعدة البيانات، محرك قراءة البصمة، محرك الحسابات، والأرشيف التاريخي للشهور
+app.py - Main entry point and backend server for PayGuard.
+Integrates SQLite database, ZKTeco punch parser, payroll engine, and historical monthly archives.
 """
 
 import os
@@ -23,7 +23,7 @@ def get_template_dir():
 
 app = Flask(__name__, template_folder=get_template_dir())
 
-# الذاكرة المؤقتة للشهر الحالي المعروض
+# Active memory cache for the currently loaded month
 CURRENT_MONTH_CACHE = {
     "meta": {},
     "employees": []
@@ -35,13 +35,13 @@ def home():
 
 @app.route('/get_history')
 def get_history():
-    """جلب قائمة الشهور المحفوظة في الأرشيف"""
+    """Fetch list of archived monthly sheets."""
     sheets = database.get_all_monthly_sheets()
     return jsonify({"sheets": sheets})
 
 @app.route('/load_month')
 def load_month():
-    """تحميل بيانات شهر محفوظ سابقاً بالكامل"""
+    """Load full payroll data for an archived month."""
     month_name = request.args.get('month')
     if not month_name:
         return jsonify({"error": "يرجى تحديد الشهر"}), 400
@@ -52,7 +52,7 @@ def load_month():
 
     records = database.get_saved_payroll_by_month(month_name)
     
-    # تحديث الكاش
+    # Update in-memory cache
     CURRENT_MONTH_CACHE["meta"] = sheet_meta
     CURRENT_MONTH_CACHE["employees"] = records
 
@@ -87,7 +87,7 @@ def upload_file():
     meta = parse_result["meta"]
     parsed_emps = parse_result["employees"]
 
-    # حفظ بيانات الشهر في قاعدة البيانات
+    # Save monthly sheet metadata in SQLite
     sheet_id = database.save_monthly_sheet(
         month_name=meta["month_name"],
         year=meta["year"],
@@ -99,7 +99,7 @@ def upload_file():
         friday_factor=2.0
     )
 
-    # التحقق من كل موظف في قاعدة البيانات المحلية (جديد أم قديم)
+    # Enrich and evaluate each employee record against local database (new vs existing)
     enriched_employees = []
     for emp in parsed_emps:
         eid = str(emp["emp_id"])
@@ -110,7 +110,7 @@ def upload_file():
             basic_salary = float(db_emp["basic_salary"])
             work_hours = float(db_emp["work_hours"] or 10.0)
             emp_name = db_emp["name"] or emp["name"]
-            # رصيد السلفة المنقول من الشهر السابق
+            # Carried forward loan balance from previous month
             total_advance = float(db_emp.get("remaining_advance") or db_emp.get("total_advance") or 0.0)
         else:
             is_new = True
@@ -162,7 +162,7 @@ def upload_file():
             "daily_details": emp.get("daily_details", [])
         }
 
-        # حفظ سجل كل موظف فوراً في قاعدة البيانات للشهر
+        # Automatically persist employee record to current month sheet
         database.save_payroll_record({
             "month_name": meta["month_name"],
             "emp_id": eid,
@@ -214,7 +214,7 @@ def save_employee_endpoint():
     advance = float(emp.get("advance") or 0.0)
     remaining_advance = total_advance - advance
 
-    # 1. تحديث بيانات الموظف الدائمة في جدول الموظفين (للشهور القادمة)
+    # 1. Update permanent employee record (for future months)
     database.save_or_update_employee(
         emp_id=eid,
         name=name,
@@ -224,7 +224,7 @@ def save_employee_endpoint():
         remaining_advance=remaining_advance
     )
 
-    # 2. تحديث وحفظ سجل الشهر في قاعدة البيانات فوراً
+    # 2. Update and persist monthly payroll record immediately
     database.save_payroll_record({
         "month_name": month_name,
         "emp_id": eid,
@@ -249,7 +249,7 @@ def save_employee_endpoint():
         "notes": emp.get("notes", "")
     })
 
-    # تحديث الكاش
+    # Update in-memory cache
     for cached_emp in CURRENT_MONTH_CACHE["employees"]:
         if cached_emp["emp_id"] == eid:
             cached_emp.update(emp)
@@ -350,7 +350,7 @@ def export_excel_endpoint():
 
 @app.route('/employee_slip/<emp_id>')
 def employee_slip_endpoint(emp_id):
-    """عرض قسيمة مرتب الموظف الفردية بصيغة HTML جاهزة للطباعة الفورية باللغة المحددة"""
+    """Render individual employee HTML payslip ready for instant printing."""
     month = request.args.get('month') or CURRENT_MONTH_CACHE.get("meta", {}).get("month_name", "الشهر")
     lang = request.args.get('lang', 'ar')
     meta = CURRENT_MONTH_CACHE.get("meta", {})
@@ -378,7 +378,7 @@ def employee_slip_endpoint(emp_id):
 
 @app.route('/export_employee_pdf', methods=['POST', 'GET'])
 def export_employee_pdf_endpoint():
-    """توليد ملف PDF فعلي باسم الموظف والشهر وفتحه على ويندوز مباشرة باللغة المحددة"""
+    """Generate individual employee PDF payslip and automatically open on Windows."""
     data = request.json or {}
     emp_id = request.args.get('emp_id') or data.get('emp_id')
     month = request.args.get('month') or data.get('month_name') or CURRENT_MONTH_CACHE.get("meta", {}).get("month_name", "الشهر")
@@ -404,7 +404,7 @@ def export_employee_pdf_endpoint():
     if not emp:
         return jsonify({"error": "الموظف غير موجود"}), 404
 
-    # استرجاع سجل البصمات اليومية للموظف إن وجد في الكاش
+    # Retrieve daily punches log from cache if available
     if "daily_details" not in emp:
         for ce in CURRENT_MONTH_CACHE.get("employees", []):
             if str(ce.get("emp_id")) == str(emp.get("emp_id")) and "daily_details" in ce:
@@ -431,7 +431,7 @@ def export_employee_pdf_endpoint():
 
 @app.route('/download_employee_pdf')
 def download_employee_pdf_endpoint():
-    """تحميل ملف الـ PDF المخصص للموظف"""
+    """Download generated employee PDF payslip."""
     filename = request.args.get('filename')
     if not filename:
         return "اسم الملف غير محدد", 400
@@ -443,7 +443,7 @@ def download_employee_pdf_endpoint():
 
 @app.route('/open_pdf_folder')
 def open_pdf_folder_endpoint():
-    """فتح مجلد تقارير الـ PDF في مستكشف ويندوز أو ماك أو لينكس"""
+    """Open PDF slips directory in Windows Explorer, macOS Finder, or Linux file manager."""
     import subprocess
     folder = os.path.join(database.BASE_DIR, "تقارير_الموظفين_PDF")
     os.makedirs(folder, exist_ok=True)
@@ -457,7 +457,7 @@ def open_pdf_folder_endpoint():
 
 
 def start_gui():
-    """تشغيل التطبيق في نافذة سطح مكتب حقيقية مع تهيئة قاعدة البيانات بجوار الـ EXE"""
+    """Launch desktop application with native webview GUI window."""
     database.init_db()
 
     try:
@@ -476,9 +476,10 @@ def start_gui():
         webview.start()
     except Exception as e:
         import webbrowser
-        print(f"جاري فتح النظام في المتصفح الافتراضي: {e}")
+        print(f"Opening PayGuard in default browser: {e}")
         threading.Timer(1.0, lambda: webbrowser.open('http://127.0.0.1:5892')).start()
         app.run(port=5892, debug=False)
 
 if __name__ == '__main__':
     start_gui()
+

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PayGuard - Smart Payroll & Attendance System</title>
-    <!-- خطوط عربية ولاتينية عالية النقاء -->
+    <!-- High-resolution Arabic & Latin typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -90,7 +90,7 @@
         }
 
         /* -------------------------------------------------------------
-           HEADER - الترويسة العلوية الفخمة بنظام PayGuard
+           HEADER - PayGuard Enterprise Navigation Bar
         ------------------------------------------------------------- */
         .pg-header {
             background: linear-gradient(135deg, #090e17 0%, #0f1a2e 50%, #132238 100%);
@@ -219,7 +219,7 @@
             flex-wrap: wrap;
         }
 
-        /* قائمة الأرشيف التاريخي في الهيدر */
+        /* Historical archive dropdown */
         .history-wrap {
             display: flex;
             align-items: center;
@@ -262,7 +262,7 @@
             border-color: #3b82f6;
         }
 
-        /* زر تبديل اللغة */
+        /* Language switcher button */
         .btn-lang-toggle {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -285,7 +285,7 @@
             transform: translateY(-1px);
         }
 
-        /* الأزرار العامة بنمط PayGuard */
+        /* General PayGuard button styles */
         .pg-btn {
             padding: 9px 18px;
             border-radius: var(--pg-radius-md);
@@ -419,7 +419,7 @@
             font-weight: 500;
         }
 
-        /* شريط التنبيه عند استرجاع شهر محفوظ */
+        /* Archive restored notification bar */
         .archive-banner {
             display: none;
             background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
@@ -441,7 +441,7 @@
         }
 
         /* -------------------------------------------------------------
-           DROPZONE - منطقة رفع ومعالجة ملف البصمة
+           DROPZONE - Biometric file upload area
         ------------------------------------------------------------- */
         .dropzone {
             border: 2px dashed #94a3b8;
@@ -492,7 +492,7 @@
         }
 
         /* -------------------------------------------------------------
-           STATS GRID - بطاقات الـ KPI الإحصائية
+           STATS GRID - Key performance indicators
         ------------------------------------------------------------- */
         .stats-grid {
             display: none;
@@ -579,7 +579,7 @@
         }
 
         /* -------------------------------------------------------------
-           TOOLBAR & CONTROLS - شريط أدوات الكشف
+           TOOLBAR & CONTROLS - Table action toolbar
         ------------------------------------------------------------- */
         .table-toolbar {
             display: flex;
@@ -659,7 +659,7 @@
         }
 
         /* -------------------------------------------------------------
-           TABLE - جدول كشف المرتبات المؤسسي
+           TABLE - Enterprise payroll spreadsheet
         ------------------------------------------------------------- */
         .table-responsive {
             overflow-x: auto;
@@ -710,7 +710,7 @@
             background-color: #f8fafc;
         }
 
-        /* هوية الموظف وأيقونة الـ Avatar */
+        /* Employee avatar badge */
         .emp-col {
             display: flex;
             align-items: center;
@@ -744,7 +744,7 @@
             font-weight: 600;
         }
 
-        /* بادجات السلف والحضور */
+        /* Loan status and attendance tags */
         .pg-badge {
             padding: 3px 8px;
             border-radius: 6px;
@@ -806,7 +806,7 @@
         }
 
         /* -------------------------------------------------------------
-           MODAL - نافذة التعديل والتفاصيل الفخمة
+           MODAL - Employee details and adjustment modal
         ------------------------------------------------------------- */
         .modal-overlay {
             display: none;
@@ -950,7 +950,7 @@
             font-weight: 600;
         }
 
-        /* صندوق التحذير المالي الفوري عند تجاوز السلفة */
+        /* Instant financial warning for over-deductions */
         .advance-warning-box {
             display: none;
             background: #fff1f2;
@@ -984,7 +984,7 @@
             line-height: 1.45;
         }
 
-        /* بطاقة الحساب اللحظي المباشر (Dark SaaS Theme) */
+        /* Real-time calculation card (Dark SaaS theme) */
         .live-summary-card {
             background: #0f172a;
             color: #ffffff;
@@ -1080,7 +1080,7 @@
             font-size: 12px;
         }
 
-        /* لغات الاتجاه (RTL / LTR) */
+        /* Directional styling (RTL / LTR) */
         html[dir="ltr"] .pg-header {
             direction: ltr;
         }
@@ -1098,11 +1098,11 @@
 </head>
 <body>
 
-    <!-- الترويسة الرئيسية للنظام الفخم PayGuard -->
+    <!-- PayGuard Enterprise Header -->
     <header class="pg-header">
         <div class="pg-brand" onclick="window.scrollTo({top:0, behavior:'smooth'})">
             <div class="pg-logo-shield">
-                <!-- أيقونة الدرع البيومتري وحماية المدفوعات -->
+                <!-- Biometric shield and payment protection icon -->
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     <path d="m9 12 2 2 4-4"/>
@@ -1120,7 +1120,7 @@
                 <span id="statusLiveText">LIVE SYSTEM</span>
             </div>
 
-            <!-- قائمة الأرشيف التاريخي للشهور -->
+            <!-- Historical monthly sheets archive dropdown -->
             <div class="history-wrap" id="historyWrap" style="display: none;">
                 <label id="lblHistory">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -1133,14 +1133,14 @@
         </div>
 
         <div class="pg-header-actions">
-            <!-- زر رفع شهر جديد -->
+            <!-- Upload new monthly sheet button -->
             <button class="pg-btn pg-btn-white pg-btn-sm" id="btnUploadMonth" onclick="document.getElementById('fileInput').click()">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                 <span id="btnUploadMonthText">رفع شهر جديد</span>
             </button>
             <input type="file" id="fileInput" accept=".txt,.log" style="display: none;" onchange="handleFileSelect(event)">
 
-            <!-- زر التبديل الفوري بين اللغتين -->
+            <!-- Instant language toggle button -->
             <button class="btn-lang-toggle" id="langToggleBtn" onclick="toggleLanguage()" title="Switch Language / تبديل اللغة">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                 <span id="langBtnText">🌐 English</span>
@@ -1148,10 +1148,10 @@
         </div>
     </header>
 
-    <!-- المحتوى الرئيسي للمنصة -->
+    <!-- Main application workspace -->
     <main class="pg-container">
 
-        <!-- شريط التنبيه عند استعراض شهر محفوظ من الأرشيف -->
+        <!-- Archive mode notification banner -->
         <div class="archive-banner" id="archiveBanner">
             <div class="archive-banner-left">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -1167,7 +1167,7 @@
             </button>
         </div>
 
-        <!-- الخطوة 1: بطاقة رفع ملف البصمة -->
+        <!-- Step 1: Biometric file upload dropzone -->
         <section class="pg-card" id="step1Card">
             <div class="pg-card-header">
                 <div>
@@ -1192,9 +1192,9 @@
             </div>
         </section>
 
-        <!-- شبكة بطاقات الإحصائيات (KPIs) -->
+        <!-- KPI Summary & Metrics Grid -->
         <section class="stats-grid" id="statsGrid">
-            <!-- 1. إجمالي الصافي -->
+            <!-- 1. Total Net Payroll -->
             <div class="stat-card emerald">
                 <div class="stat-header">
                     <span class="stat-title" id="lblTotalNetCard">صافي المرتبات الكلي</span>
@@ -1205,7 +1205,7 @@
                 <div class="stat-value mono-num"><span id="statNetSalaries">0.00</span><span class="stat-unit curr-unit">ج.م</span></div>
             </div>
 
-            <!-- 2. إجمالي الأساسي -->
+            <!-- 2. Total Basic Salaries -->
             <div class="stat-card blue">
                 <div class="stat-header">
                     <span class="stat-title" id="lblTotalBaseCard">إجمالي الرواتب الأساسية</span>
@@ -1216,7 +1216,7 @@
                 <div class="stat-value mono-num"><span id="statBaseSalaries">0.00</span><span class="stat-unit curr-unit">ج.م</span></div>
             </div>
 
-            <!-- 3. إجمالي السلف المخصومة -->
+            <!-- 3. Total Repaid Loans -->
             <div class="stat-card amber">
                 <div class="stat-header">
                     <span class="stat-title" id="lblTotalAdvancesCard">أقساط السلف المخصومة</span>
@@ -1227,7 +1227,7 @@
                 <div class="stat-value mono-num"><span id="statTotalAdvances">0.00</span><span class="stat-unit curr-unit">ج.م</span></div>
             </div>
 
-            <!-- 4. إجمالي الإضافي والجمعة -->
+            <!-- 4. Total Overtime & Friday Premiums -->
             <div class="stat-card cyan">
                 <div class="stat-header">
                     <span class="stat-title" id="lblTotalOvertimeCard">بدلات الجمعة والإضافي</span>
@@ -1238,7 +1238,7 @@
                 <div class="stat-value mono-num"><span id="statTotalOvertime">0.00</span><span class="stat-unit curr-unit">ج.م</span></div>
             </div>
 
-            <!-- 5. عدد الموظفين -->
+            <!-- 5. Total Headcount -->
             <div class="stat-card slate">
                 <div class="stat-header">
                     <span class="stat-title" id="lblActiveEmpsCard">الموظفون المسجلون</span>
@@ -1250,7 +1250,7 @@
             </div>
         </section>
 
-        <!-- الخطوة 2: جدول كشف المرتبات وإدارة الموظفين -->
+        <!-- Step 2: Payroll sheet table and controls -->
         <section class="pg-card" id="step2Card" style="display: none;">
             <div class="table-toolbar">
                 <div class="search-box-wrap">
@@ -1259,31 +1259,31 @@
                 </div>
 
                 <div class="toolbar-actions">
-                    <!-- معامل مضاعفة الجمعة -->
+                    <!-- Friday rate multiplier -->
                     <div class="factor-control" title="معامل احتساب أجر يوم الجمعة">
                         <span id="lblFridayFactor">معامل الجمعة:</span>
                         <input type="number" id="fridayFactorInput" value="2.0" step="0.1" min="1.0" onchange="onFridayFactorChange()">
                     </div>
 
-                    <!-- حفظ الكشف بالكامل في قاعدة البيانات -->
+                    <!-- Save entire payroll sheet to database -->
                     <button class="pg-btn pg-btn-emerald" id="btnSavePayroll" onclick="saveEntirePayroll()" title="حفظ وتثبيت كافة بيانات الكشف في الأرشيف">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                         <span id="btnSavePayrollText">💾 حفظ الكشف بالكامل</span>
                     </button>
 
-                    <!-- تصدير لإكسيل -->
+                    <!-- Export to Excel -->
                     <button class="pg-btn pg-btn-dark" id="btnExportExcel" onclick="exportToExcel()">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
                         <span id="btnExportExcelText">تصدير إكسيل</span>
                     </button>
 
-                    <!-- إضافة موظف يدوي -->
+                    <!-- Add employee manually -->
                     <button class="pg-btn pg-btn-outline" id="btnAddEmployee" onclick="openAddEmployeeModal()">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         <span id="btnAddEmployeeText">إضافة موظف</span>
                     </button>
 
-                    <!-- فتح مجلد التقارير -->
+                    <!-- Open reports directory -->
                     <button class="pg-btn pg-btn-outline" id="btnOpenPdfFolder" onclick="openPdfReportsFolder()" title="فتح مجلد التقارير PDF في ويندوز">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
                         <span id="btnOpenPdfFolderText">مجلد الـ PDF</span>
@@ -1291,7 +1291,7 @@
                 </div>
             </div>
 
-            <!-- جدول عرض بيانات الموظفين -->
+            <!-- Employee payroll table -->
             <div class="table-responsive">
                 <table class="payroll-table" id="payrollTable">
                     <thead>
@@ -1309,7 +1309,7 @@
                         </tr>
                     </thead>
                     <tbody id="payrollTableBody">
-                        <!-- تملأ ديناميكياً عبر الجافاسكريبت -->
+                        <!-- Dynamically populated via JavaScript -->
                     </tbody>
                 </table>
             </div>
@@ -1318,7 +1318,7 @@
     </main>
 
     <!-- -------------------------------------------------------------
-         MODAL 1: نافذة تعديل بيانات ومفردات مرتب الموظف
+         MODAL 1: Employee Payroll Edit & Details Dialog
     ------------------------------------------------------------- -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-container">
@@ -1334,7 +1334,7 @@
             </div>
 
             <div class="modal-body">
-                <!-- شريط التنبيه الفوري عند تجاوز قسط السلفة للرصيد -->
+                <!-- Over-deduction alert banner -->
                 <div class="advance-warning-box" id="advanceWarningBox">
                     <div class="advance-warning-title">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -1346,7 +1346,7 @@
                     </div>
                 </div>
 
-                <!-- 1. البيانات الأساسية -->
+                <!-- 1. Basic Employee Profile -->
                 <div class="section-label">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     <span id="secPersonalInfo">1. البيانات الأساسية والتعاقدية</span>
@@ -1372,7 +1372,7 @@
                     </div>
                 </div>
 
-                <!-- 2. الحضور والغياب والإضافي -->
+                <!-- 2. Attendance, Absence, and Overtime -->
                 <div class="section-label" style="color: #059669;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                     <span id="secAttendance">2. الحضور والغياب والإضافي</span>
@@ -1412,7 +1412,7 @@
                     </div>
                 </div>
 
-                <!-- 3. رصيد السلف والاستقطاعات والرقابة -->
+                <!-- 3. Loan Balances and Deductions -->
                 <div class="section-label" style="color: #b45309;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     <span id="secAdvances">3. رصيد السلف والأقساط والاستقطاعات</span>
@@ -1439,7 +1439,7 @@
                     <input type="number" id="mDeduction" step="0.01" oninput="calculateModalLive()">
                 </div>
 
-                <!-- شريط الحساب المباشر اللحظي داخل المودال (Live Preview) -->
+                <!-- Live calculation preview within modal -->
                 <div class="live-summary-card">
                     <div>
                         <div class="summary-item-val mono-num" id="prevDayRate">0.00</div>
@@ -1463,7 +1463,7 @@
                     </div>
                 </div>
 
-                <!-- جدول تفاصيل البصمات اليومية -->
+                <!-- Daily biometric punch details table -->
                 <div id="punchesDetailsBox" style="display: none;">
                     <div class="section-label" style="color: #475569;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -1482,7 +1482,7 @@
                                 </tr>
                             </thead>
                             <tbody id="punchesTableBody">
-                                <!-- تملأ ديناميكياً -->
+                                <!-- Populated dynamically -->
                             </tbody>
                         </table>
                     </div>
@@ -1509,7 +1509,7 @@
     </div>
 
     <!-- -------------------------------------------------------------
-         MODAL 2: إضافة موظف يدوي بدون بصمة
+         MODAL 2: Add Manual Employee (No Biometric Punch)
     ------------------------------------------------------------- -->
     <div class="modal-overlay" id="addEmpModal">
         <div class="modal-container" style="max-width: 540px;">
@@ -1554,24 +1554,24 @@
         </div>
     </div>
 
-    <!-- رسالة التوست العائمة (Toast Notification) -->
+    <!-- Floating toast notification -->
     <div class="pg-toast" id="toastMessage">
         <div class="pg-toast-icon">✓</div>
         <span id="toastText">تمت العملية بنجاح</span>
     </div>
 
     <!-- -------------------------------------------------------------
-         JAVASCRIPT - المنطق البرمجي وثنائية اللغة والحسابات اللحظية
+         JAVASCRIPT - Application Logic, Bilingual Support, and Live Math
     ------------------------------------------------------------- -->
     <script>
         let payrollEmployees = [];
         let currentMonthMeta = {};
         let activeEditEmpId = null;
 
-        // اللغة المفعلة حالياً: استرجاع من الذاكرة المحلية أو العربية افتراضياً
+        // Active language: restore from localStorage or default to Arabic
         let currentLang = localStorage.getItem('payroll_app_lang') || 'ar';
 
-        // قاموس الترجمة الشامل لجميع عناصر الواجهة
+        // Comprehensive translation dictionary for UI elements
         const TRANSLATIONS = {
             ar: {
                 appSubtitle: "PayGuard | نظام كشف المرتبات وحضور البصمة الذكي",
@@ -1959,7 +1959,7 @@
             applyLanguage(nextLang);
         }
 
-        // عند تحميل الصفحة: استرجاع الأرشيف وتطبيق اللغة
+        // Page initialization: load archives and apply language
         document.addEventListener('DOMContentLoaded', () => {
             applyLanguage(currentLang);
             fetchHistoryList(true);
@@ -1984,7 +1984,7 @@
                         historySelect.appendChild(opt);
                     });
 
-                    // تحميل أحدث شهر تلقائياً
+                    // Automatically load most recent monthly sheet
                     if(autoLoadLatest && sheets.length > 0) {
                         loadMonthByName(sheets[0].month_name);
                     }
@@ -2016,7 +2016,7 @@
             .catch(err => alert("Error loading month: " + err));
         }
 
-        // السحب والإفلات والرفع
+        // Drag & drop file upload handlers
         function handleDragOver(e) {
             e.preventDefault();
             document.getElementById("dropzone").classList.add("dragover");
@@ -2073,13 +2073,13 @@
             currentMonthMeta = data.meta;
             payrollEmployees = data.employees;
 
-            // إظهار شريط الأرشيف
+            // Display archive banner
             const banner = document.getElementById("archiveBanner");
             banner.style.display = "flex";
             document.getElementById("bannerMonthName").innerText = currentMonthMeta.month_name;
             document.getElementById("bannerDaysLogs").innerText = `(${currentMonthMeta.days_in_month || 30} ${currentLang === 'en' ? 'days' : 'يوم'} | ${currentMonthMeta.total_logs || 0} ${currentLang === 'en' ? 'logs' : 'سجل'})`;
 
-            // إخفاء كارت الرفع وإظهار الإحصائيات والجدول
+            // Hide dropzone and display stats and payroll table
             document.getElementById("step1Card").style.display = "none";
             document.getElementById("statsGrid").style.display = "grid";
             document.getElementById("step2Card").style.display = "block";
@@ -2110,11 +2110,11 @@
 
                 const tr = document.createElement("tr");
 
-                // حساب رصيد السلفة والمتبقي
+                // Calculate loan balance and remaining rollover
                 const totalAdv = parseFloat(emp.total_advance) || 0;
                 const remAdv = emp.remaining_advance !== undefined ? parseFloat(emp.remaining_advance) : (totalAdv - advDeducted);
 
-                // حالة السلفة كبادج أنيق
+                // Loan status badge styling
                 let advanceBadgeHtml = "";
                 if (remAdv < 0) {
                     advanceBadgeHtml = `<span class="pg-badge pg-badge-red" title="تم خصم قسط أكبر من السلفة بموافقة المدير">⚠️ ${t.badgeNegativeAdvance}: ${remAdv.toFixed(2)} ${t.currency}</span>`;
@@ -2126,7 +2126,7 @@
                     advanceBadgeHtml = `<span class="pg-badge pg-badge-slate">-</span>`;
                 }
 
-                // الحروف الأولى للاسم Avatar
+                // Generate employee initials for avatar
                 const initials = emp.name ? emp.name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase() : '--';
 
                 tr.innerHTML = `
@@ -2172,7 +2172,7 @@
                 tbody.appendChild(tr);
             });
 
-            // تحديث كروت الإحصائيات
+            // Update KPI metrics cards
             document.getElementById("statNetSalaries").innerText = totalNet.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             document.getElementById("statBaseSalaries").innerText = totalBase.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             document.getElementById("statTotalAdvances").innerText = totalAdvDeducted.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -2216,14 +2216,14 @@
             renderEmployeeList(payrollEmployees);
         }
 
-        // فتح نافذة التعديل
+        // Open employee edit dialog
         function openEditModal(empId) {
             const emp = payrollEmployees.find(e => e.emp_id == empId);
             if(!emp) return;
             activeEditEmpId = empId;
             const t = TRANSLATIONS[currentLang];
 
-            // الحروف الأولى للاسم
+            // Compute employee initials
             const initials = emp.name ? emp.name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase() : '--';
             document.getElementById("mAvatarInitials").innerText = initials;
             document.getElementById("mEmpSubHeader").innerText = `${emp.name} — ID: ${emp.emp_id}`;
@@ -2240,7 +2240,7 @@
             document.getElementById("mOvertimeHours").value = emp.overtime_hours || 0;
             document.getElementById("mBonus").value = emp.bonus || 0;
 
-            // حقول السلف
+            // Populate loan balance fields
             const totalAdv = emp.total_advance || 0;
             const advDeducted = emp.advance || 0;
             const remAdv = emp.remaining_advance !== undefined ? emp.remaining_advance : (totalAdv - advDeducted);
@@ -2251,7 +2251,7 @@
 
             document.getElementById("mDeduction").value = emp.deduction || 0;
 
-            // ملء جدول البصمات اليومية
+            // Populate daily punch records table
             const tbody = document.getElementById("punchesTableBody");
             tbody.innerHTML = "";
             if(emp.daily_details && emp.daily_details.length > 0) {
@@ -2280,7 +2280,7 @@
             document.getElementById("editModal").style.display = "none";
         }
 
-        // الحساب اللحظي المباشر أثناء الكتابة داخل المودال
+        // Real-time calculation on input change inside modal
         function calculateModalLive() {
             const t = TRANSLATIONS[currentLang];
             const salary = parseFloat(document.getElementById("mBasicSalary").value) || 0;
@@ -2291,13 +2291,13 @@
             const overtime = parseFloat(document.getElementById("mOvertimeHours").value) || 0;
             const bonus = parseFloat(document.getElementById("mBonus").value) || 0;
 
-            // حساب السلف والمتبقي
+            // Calculate loan installment and remaining balance
             const totalAdvance = parseFloat(document.getElementById("mTotalAdvance").value) || 0;
             const advance = parseFloat(document.getElementById("mAdvance").value) || 0;
             const remainingAdvance = totalAdvance - advance;
             document.getElementById("mRemainingAdvance").value = remainingAdvance;
 
-            // التحذير اللوني عند تجاوز الخصم للرصيد
+            // Highlight warning when deduction exceeds loan balance
             const warnBox = document.getElementById("advanceWarningBox");
             const remInput = document.getElementById("mRemainingAdvance");
             if (advance > totalAdvance) {
@@ -2340,7 +2340,7 @@
             document.getElementById("prevNetSalary").innerText = net.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + t.currency;
         }
 
-        // حفظ التعديلات في الموظف
+        // Save employee adjustments
         function saveModalChanges() {
             const emp = payrollEmployees.find(e => e.emp_id == activeEditEmpId);
             if(!emp) return;
@@ -2350,7 +2350,7 @@
             const advance = parseFloat(document.getElementById("mAdvance").value) || 0;
             const remainingAdvance = totalAdvance - advance;
 
-            // التحقق وتأكيد موافقة المدير إذا كان الخصم أكبر من السلفة
+            // Verify manager approval if deduction exceeds loan balance
             if (advance > totalAdvance) {
                 const diff = (advance - totalAdvance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 const confirmMsg = t.confirmAdvanceWarningModal
@@ -2381,7 +2381,7 @@
             emp.deduction = parseFloat(document.getElementById("mDeduction").value) || 0;
             emp.is_new = false;
 
-            // إعادة حساب الصافي
+            // Recalculate net salary
             const daysInMonth = currentMonthMeta.days_in_month || 30;
             const dayRate = emp.basic_salary / daysInMonth;
             const hourRate = emp.work_hours > 0 ? (dayRate / emp.work_hours) : 0;
@@ -2397,7 +2397,7 @@
             emp.overtime_amount = overtimePay;
             emp.net_salary = Math.max(0, basePay + fridayExtra + overtimePay + emp.bonus - emp.advance - emp.deduction);
 
-            // إرسال الحفظ لقاعدة البيانات
+            // Persist record to database
             fetch("/save_employee", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -2411,7 +2411,7 @@
             renderEmployeeList(payrollEmployees);
         }
 
-        // إضافة موظف يدوي
+        // Add employee manually without biometric punch
         function openAddEmployeeModal() {
             document.getElementById("addName").value = "";
             document.getElementById("addEmpId").value = "";
@@ -2502,7 +2502,7 @@
             currentMonthMeta = {};
         }
 
-        // حفظ الكشف بالكامل في قاعدة البيانات
+        // Save full monthly payroll sheet to database
         function saveEntirePayroll() {
             const t = TRANSLATIONS[currentLang];
             if(!payrollEmployees || payrollEmployees.length === 0) {
@@ -2510,7 +2510,7 @@
                 return;
             }
 
-            // فحص هل يوجد أي موظف تجاوز قسط السلفة رصيده
+            // Check for any employees with over-deducted loan installments
             const exceededEmps = payrollEmployees.filter(e => (parseFloat(e.advance) || 0) > (parseFloat(e.total_advance) || 0));
             if (exceededEmps.length > 0) {
                 let listText = exceededEmps.map(e => `• ${e.name}: ${currentLang === 'en' ? 'deducted' : 'مخصوم'} (${e.advance} ${t.currency}) ${currentLang === 'en' ? 'from balance' : 'من رصيد'} (${e.total_advance} ${t.currency}) -> ${currentLang === 'en' ? 'negative remaining' : 'المتبقي بالسالب'} (${(parseFloat(e.total_advance)||0) - (parseFloat(e.advance)||0)} ${t.currency})`).join('\n');
@@ -2545,7 +2545,7 @@
             .catch(err => alert("Error: " + err));
         }
 
-        // استخراج وطباعة تقرير PDF للموظف المفتوح حالياً في المودال
+        // Export and print PDF payslip for active employee in modal
         function printActiveEmployeePDF() {
             const emp = payrollEmployees.find(e => e.emp_id == activeEditEmpId);
             if(!emp) return;
@@ -2567,7 +2567,7 @@
                 }
             }
 
-            // أخذ القيم اللحظية الحالية من الحقول المفتوحة
+            // Read live values from modal inputs
             emp.name = document.getElementById("mName").value.trim() || emp.name;
             emp.basic_salary = parseFloat(document.getElementById("mBasicSalary").value) || 0;
             emp.work_hours = parseFloat(document.getElementById("mWorkHours").value) || 10;
@@ -2622,7 +2622,7 @@
             });
         }
 
-        // استخراج تقرير PDF لموظف بالضغط على زر القائمة مباشرة
+        // Export employee PDF report from table action button
         function printEmployeePDF(empId) {
             const emp = payrollEmployees.find(e => e.emp_id == empId);
             if(!emp) return;
@@ -2655,14 +2655,14 @@
             });
         }
 
-        // معاينة وطباعة قسيمة الراتب في نافذة منفصلة
+        // Preview and print payslip in dedicated window
         function previewActiveEmployeeSlip() {
             if(!activeEditEmpId) return;
             const month = encodeURIComponent(currentMonthMeta.month_name || "الشهر");
             window.open(`/employee_slip/${activeEditEmpId}?month=${month}&lang=${currentLang}`, '_blank', 'width=920,height=980,scrollbars=yes');
         }
 
-        // فتح مجلد تقارير الـ PDF
+        // Open PDF reports directory in file explorer
         function openPdfReportsFolder() {
             const t = TRANSLATIONS[currentLang];
             fetch("/open_pdf_folder")

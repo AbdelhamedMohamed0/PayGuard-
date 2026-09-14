@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-payroll_engine.py - المحرك الحسابي للمرتبات
-يطبق بدقة معادلة أبو عوف ومعايير المحاسبة المصرية المعتمدة في تقرير PDF مع رصيد السلف
+payroll_engine.py - Core payroll calculation engine for PayGuard.
+Calculates employee daily/hourly rates, attendance earnings, overtime, loan deductions, and net salary.
 """
 
 def calculate_employee_payroll(
@@ -20,7 +20,7 @@ def calculate_employee_payroll(
     deduction: float = 0.0
 ):
     """
-    حساب مفردات وصافي مرتب الموظف ورصيد السلف
+    Calculate employee earnings, deductions, loan balance rollovers, and net payable salary.
     """
     basic_salary = float(basic_salary or 0.0)
     work_hours = float(work_hours or 10.0)
@@ -41,31 +41,31 @@ def calculate_employee_payroll(
     advance = float(advance or 0.0)
     deduction = float(deduction or 0.0)
 
-    # 1. معدل اليوم والساعة
+    # 1. Daily and hourly rate
     day_rate = basic_salary / days_in_month
     hour_rate = day_rate / work_hours
 
-    # 2. إجمالي أيام الاستحقاق (الحضور الفعلي + الإجازات المدفوعة)
+    # 2. Total paid attendance days (actual attended + paid vacations)
     paid_days = attended_days + vacation_days
     base_attendance_pay = paid_days * day_rate
 
-    # 3. بدل حضور الجمعات
+    # 3. Friday work extra premium
     friday_extra_factor = max(0.0, friday_factor - 1.0)
     friday_extra_amount = friday_days * friday_extra_factor * day_rate
 
-    # 4. حساب الساعات الإضافية (س+)
+    # 4. Overtime pay calculation
     overtime_amount = overtime_hours * hour_rate
 
-    # 5. حساب إجمالي الحضور والبدلات
+    # 5. Gross earnings (attendance, overtime, allowances, bonuses)
     total_attendance_and_bonus = base_attendance_pay + friday_extra_amount + overtime_amount + bonus
 
-    # 6. حساب رصيد السلفة المتبقي (يمكن أن يكون سالباً في حال تجاوز قسط الخصم لإجمالي السلفة)
+    # 6. Remaining loan balance (supports negative values for over-deductions)
     remaining_advance = total_advance - advance
 
-    # 7. إجمالي الاستقطاعات
+    # 7. Total deductions
     total_deductions = advance + deduction
 
-    # 8. صافي الراتب المستحق
+    # 8. Net payable salary
     net_salary = total_attendance_and_bonus - total_deductions
     if net_salary < 0:
         net_salary = 0.0
@@ -96,8 +96,8 @@ def calculate_employee_payroll(
     }
 
 if __name__ == '__main__':
-    # اختبار نموذج عبدالحميد النحاس:
-    # سلفة 20,000 ج.م، تم خصم 2,000 ج.م هذا الشهر، المتبقي 18,000 ج.م
+    # Test calculation model:
+    # Loan: 20,000 EGP, Repayment: 2,000 EGP, Remaining: 18,000 EGP
     res = calculate_employee_payroll(
         basic_salary=7000,
         work_hours=10,
@@ -111,7 +111,8 @@ if __name__ == '__main__':
         advance=2000,
         deduction=0.0035
     )
-    print("إجمالي السلفة:", res["total_advance"], "ج.م")
-    print("المخصوم هذا الشهر:", res["advance"], "ج.م")
-    print("المتبقي للشهر القادم:", res["remaining_advance"], "ج.م")
-    print("الصافي النهائي:", res["net_salary"], "ج.م")
+    print("Total Loan Balance:", res["total_advance"], "EGP")
+    print("Repaid This Month:", res["advance"], "EGP")
+    print("Remaining for Next Month:", res["remaining_advance"], "EGP")
+    print("Net Payable Salary:", res["net_salary"], "EGP")
+

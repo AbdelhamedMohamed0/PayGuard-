@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-pdf_generator.py - وحدة إنشاء تقارير PDF الفردية لمفردات مرتب كل موظف
-تنشئ تقريراً بصيغة PDF وقسيمة راتب A4 منسقة واحترافية باللغة العربية أو الإنجليزية
+pdf_generator.py - PDF payslip generation module for PayGuard.
+Generates individual employee A4 payslip statements in Arabic or English with attendance breakdowns.
 """
 
 import os
@@ -13,7 +13,7 @@ import subprocess
 from datetime import datetime
 
 def find_system_browser():
-    """البحث عن متصفح Chromium / Chrome / Edge على أنظمة ويندوز وماك ولينكس للطباعة الصامتة إلى PDF"""
+    """Locate Chromium, Google Chrome, or Microsoft Edge for headless PDF printing."""
     candidates = [
         # Windows
         r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
@@ -49,7 +49,7 @@ def find_system_browser():
     return None
 
 def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.0, lang="ar"):
-    """بناء كود HTML احترافي لقسيمة الراتب ومفردات المرتب باللغة العربية أو الإنجليزية مطابق للطباعة A4"""
+    """Build A4-formatted HTML template for employee payslips in Arabic or English."""
     is_en = (str(lang).lower() == "en")
     
     name = emp.get("name", "موظف" if not is_en else "Employee")
@@ -68,7 +68,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
     remaining_advance = float(emp.get("remaining_advance") if emp.get("remaining_advance") is not None else (total_advance - advance))
     deduction = float(emp.get("deduction") or 0.0)
 
-    # الحسابات
+    # Financial calculations
     day_rate = basic_salary / days_in_month if days_in_month > 0 else 0.0
     hour_rate = day_rate / work_hours if work_hours > 0 else 0.0
     paid_days = attended_days + vacation_days
@@ -97,7 +97,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
         doc_lang = "ar"
         font_family = "'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
 
-    # صفوف سجل البصمة اليومية
+    # Daily punch attendance table rows
     punches_rows_html = ""
     if daily_details:
         for idx, d in enumerate(daily_details, 1):
@@ -122,7 +122,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
             </tr>
             """
 
-    # ترجمة العناوين والنصوص
+    # UI translations dictionary
     t = {
         "title": f"Payslip Statement — {name} — {month_name}" if is_en else f"مفردات مرتب — {name} — {month_name}",
         "sys_title": "PayGuard — Smart Payroll & Attendance System" if is_en else "نظام PayGuard الذكي للمرتبات وحضور البصمة",
@@ -243,7 +243,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
             margin-top: 2px;
         }}
         
-        /* كارت بيانات الموظف */
+        /* Employee Details Card */
         .emp-card {{
             background: #f8fafc;
             border: 1px solid #cbd5e1;
@@ -273,7 +273,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
             font-weight: 900;
         }}
 
-        /* جداول الحسابات والاستحقاقات */
+        /* Calculations & Allowances Tables */
         .calc-grid {{
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -322,7 +322,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
             font-size: 13px;
         }}
 
-        /* رصيد السلف */
+        /* Loan Balance Summary */
         .advance-summary-box {{
             background: #fff7ed;
             border: 1px solid #fdba74;
@@ -348,7 +348,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
             margin-top: 2px;
         }}
 
-        /* الصافي النهائي المستحق */
+        /* Net Payable Salary Box */
         .net-salary-box {{
             background: linear-gradient(135deg, #15803d 0%, #166534 100%);
             color: #ffffff;
@@ -370,7 +370,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
             letter-spacing: 0.5px;
         }}
 
-        /* جدول البصمات */
+        /* Daily Punch Table */
         .punches-section {{
             margin-bottom: 16px;
         }}
@@ -393,7 +393,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
             border: 1px solid #1e3a8a;
         }}
 
-        /* التوقيعات */
+        /* Signature Block */
         .signatures {{
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -415,7 +415,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
             margin: 0 auto;
         }}
 
-        /* أزرار الشاشة (تختفي عند الطباعة) */
+        /* Screen buttons (hidden during print) */
         @media print {{
             .no-print {{
                 display: none !important;
@@ -463,7 +463,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
     </div>
 
     <div class="slip-container">
-        <!-- الترويسة -->
+        <!-- Header -->
         <div class="header">
             <div>
                 <h1 class="header-title">{t['sys_title']}</h1>
@@ -475,7 +475,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
             </div>
         </div>
 
-        <!-- كارت بيانات الموظف والدوام -->
+        <!-- Employee Profile & Attendance Details -->
         <div class="emp-card">
             <div class="emp-grid">
                 <div>
@@ -531,9 +531,9 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
             </div>
         </div>
 
-        <!-- جدول الاستحقاقات والاستقطاعات -->
+        <!-- Earnings & Deductions Tables -->
         <div class="calc-grid">
-            <!-- الاستحقاقات -->
+            <!-- Earnings -->
             <div class="calc-table-box">
                 <div class="table-title title-earn">{t['title_earn']}</div>
                 <table class="calc-table">
@@ -560,7 +560,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
                 </table>
             </div>
 
-            <!-- الاستقطاعات -->
+            <!-- Deductions -->
             <div class="calc-table-box">
                 <div class="table-title title-deduct">{t['title_deduct']}</div>
                 <table class="calc-table">
@@ -584,7 +584,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
             </div>
         </div>
 
-        <!-- قسم متابعة رصيد السلف -->
+        <!-- Loan Balance Rollover Block -->
         <div class="advance-summary-box">
             <div class="adv-stat">
                 <div class="adv-stat-lbl">{t['adv_prev_lbl']}</div>
@@ -602,16 +602,16 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
             </div>
         </div>
 
-        <!-- الصافي النهائي المستحق للصرف -->
+        <!-- Net Payable Salary Banner -->
         <div class="net-salary-box">
             <div class="net-lbl">{t['net_sal_lbl']}</div>
             <div class="net-val">{net_salary:,.2f} {currency}</div>
         </div>
 
-        <!-- جدول تفاصيل البصمات إن وجد -->
+        <!-- Daily Punch Breakdown (if available) -->
         {'<div class="punches-section"><div class="punches-heading">' + t['punches_title'] + '</div><div style="overflow-x:auto;"><table class="punches-table"><thead><tr><th>' + t['th_num'] + '</th><th>' + t['th_date'] + '</th><th>' + t['th_day'] + '</th><th>' + t['th_in'] + '</th><th>' + t['th_out'] + '</th><th>' + t['th_hours'] + '</th><th>' + t['th_count'] + '</th></tr></thead><tbody>' + punches_rows_html + '</tbody></table></div></div>' if punches_rows_html else ''}
 
-        <!-- التوقيعات والاعتماد -->
+        <!-- Signatures & Authorization -->
         <div class="signatures">
             <div>
                 <div class="sign-title">{t['sign_emp']}</div>
@@ -634,8 +634,8 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
 
 def generate_employee_pdf(emp, month_name, output_dir=None, days_in_month=30, friday_factor=2.0, lang="ar"):
     """
-    توليد ملف PDF فعلي باسم الموظف والشهر باللغة العربية أو الإنجليزية
-    المسار الافتراضي للملفات: داخل مجلد تقارير_الموظفين_PDF بجوار البرنامج
+    Generate an employee payslip PDF file named after the employee and month in Arabic or English.
+    Default destination directory is within the application directory.
     """
     is_en = (str(lang).lower() == "en")
     
@@ -645,7 +645,7 @@ def generate_employee_pdf(emp, month_name, output_dir=None, days_in_month=30, fr
     
     os.makedirs(output_dir, exist_ok=True)
 
-    # تنظيف اسم الملف من أي رموز غير مقبولة في نظام ويندوز
+    # Sanitize file name for filesystem safety across operating systems
     raw_name = emp.get("name") or (f"Employee_{emp.get('emp_id', '0')}" if is_en else f"موظف_{emp.get('emp_id', '0')}")
     safe_name = re.sub(r'[\\/*?:"<>|]', '_', str(raw_name).strip())
     safe_month = re.sub(r'[\\/*?:"<>|]', '_', str(month_name).strip())
@@ -657,10 +657,10 @@ def generate_employee_pdf(emp, month_name, output_dir=None, days_in_month=30, fr
         
     pdf_path = os.path.join(output_dir, pdf_filename)
 
-    # إنشاء كود الـ HTML
+    # Generate HTML content
     html_content = build_employee_slip_html(emp, month_name, days_in_month, friday_factor, lang=lang)
 
-    # إنشاء ملف HTML مؤقت
+    # Create temporary HTML file
     temp_fd, temp_html_path = tempfile.mkstemp(suffix=".html", prefix="slip_")
     try:
         with open(temp_fd, 'w', encoding='utf-8') as f:
@@ -668,7 +668,7 @@ def generate_employee_pdf(emp, month_name, output_dir=None, days_in_month=30, fr
 
         browser = find_system_browser()
         if browser:
-            # تشغيل المتصفح كـ Headless لطباعة PDF مباشرة وبدون رؤوس/تذييلات المتصفح
+            # Run headless browser for silent PDF printing without headers or footers
             cmd = [
                 browser,
                 "--headless",
@@ -686,7 +686,7 @@ def generate_employee_pdf(emp, month_name, output_dir=None, days_in_month=30, fr
                     "html_fallback": False
                 }
         
-        # في حال عدم وجود المتصفح، نحفظ ملف HTML منسق بنفس الاسم
+        # Fallback to formatted HTML slip if browser is not available
         fallback_html_name = f"Salary_Slip_{safe_name}_{safe_month}.html" if is_en else f"مفردات_مرتب_{safe_name}_{safe_month}.html"
         fallback_path = os.path.join(output_dir, fallback_html_name)
         with open(fallback_path, 'w', encoding='utf-8') as f:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-zkteco_parser.py - محرك قراءة وتحليل ملفات البصمة من أجهزة ZKTeco K14 Pro
-يدعم الترميز العربي، كشف الحضور والانصراف المتعدد، الساعات اليومية، وحضور الجمعات
+zkteco_parser.py - Biometric punch log parser for ZKTeco devices.
+Supports UTF-8 and CP1256 encodings, multi-punch deduplication, daily hours, and Friday tracking.
 """
 
 import os
@@ -14,11 +14,11 @@ ARABIC_MONTHS = [
 
 def fix_mojibake(text):
     """
-    إصلاح الكلمات العربية التي خرجت بترميز مشوه من جهاز البصمة
-    مثل ÍÖæÑ (حضور) و ÅäÕÑÇÝ (إنصراف)
+    Fix mojibake Arabic characters emitted by older ZKTeco firmware.
+    e.g. ÍÖæÑ -> حضور and ÅäÕÑÇÝ -> انصراف.
     """
     try:
-        # لو كانت السلسلة تحتوي على بايتات لاتينية مشوهة أصلها CP1256
+        # If string contains latin1 bytes originally from CP1256
         fixed = text.encode('latin1').decode('cp1256')
         return fixed
     except:
@@ -26,7 +26,7 @@ def fix_mojibake(text):
 
 def parse_datetime(dt_str):
     """
-    تحويل نص التاريخ والوقت إلى كائن datetime
+    Parse date-time string into a Python datetime object.
     """
     dt_str = dt_str.strip()
     formats = [
@@ -47,10 +47,10 @@ def parse_datetime(dt_str):
 
 def parse_zkteco_file(file_bytes_or_str):
     """
-    قراءة محتوى ملف البصمة الخام وتحويله إلى سجلات مجمعة
+    Parse raw punch log file content into structured employee records.
     """
     if isinstance(file_bytes_or_str, bytes):
-        # محاولة قراءة UTF-8 أولاً ثم CP1256 (الترميز الافتراضي للويندوز العربي وأجهزة البصمة)
+        # Attempt UTF-8 first, fallback to CP1256 (Windows Arabic default) or latin1
         try:
             content = file_bytes_or_str.decode('utf-8')
         except UnicodeDecodeError:
@@ -71,12 +71,12 @@ def parse_zkteco_file(file_bytes_or_str):
     for line in lines:
         parts = [p.strip() for p in line.split('\t')]
         if len(parts) < 4:
-            # محاولة الفصل بمسافات متعددة أو فواصل لو لم يكن Tab
+            # Fallback to comma separation if tab delimiter is absent
             parts = [p.strip() for p in line.split(',') if p.strip()]
             if len(parts) < 4:
                 continue
 
-        # تخطي سطر الترويسة
+        # Skip header row
         first_part_fixed = fix_mojibake(parts[0])
         if "الإداره" in first_part_fixed or "الإدارة" in first_part_fixed or "Name" in parts[1] or "Department" in parts[0]:
             header_skipped = True
@@ -87,7 +87,7 @@ def parse_zkteco_file(file_bytes_or_str):
         timestamp_str = parts[3]
         action_type = fix_mojibake(parts[4]) if len(parts) > 4 else "حضور"
 
-        # تصحيح نوع الحركة لو كان مشوهاً
+        # Normalize action types
         if "ÍÖæÑ" in action_type or "حضور" in action_type:
             action_type = "حضور"
         elif "ÅäÕÑÇÝ" in action_type or "إنصراف" in action_type or "انصراف" in action_type:
@@ -107,30 +107,30 @@ def parse_zkteco_file(file_bytes_or_str):
     if not raw_records:
         return {"error": "لم نتمكن من استخراج بصمات صالحة من الملف. تأكد من صيغة الملف."}
 
-    # ترتيب السجلات زمنياً
+    # Sort records chronologically
     raw_records.sort(key=lambda x: x["datetime"])
 
-    # استنتاج إحصائيات الشهر وفترة البيانات
+    # Infer month stats and date range
     all_dates = [r["date"] for r in raw_records]
     min_date = min(all_dates)
     max_date = max(all_dates)
 
-    # تحديد الشهر الأكثر تكراراً أو شهر البداية
+    # Determine primary month and year
     detected_month_num = min_date.month
     detected_year = min_date.year
     month_name = f"{ARABIC_MONTHS[detected_month_num - 1]} {detected_year}"
 
-    # عدد أيام الشهر الفعلي
+    # Calculate actual days in month
     if detected_month_num in [1, 3, 5, 7, 8, 10, 12]:
         days_in_month = 31
     elif detected_month_num == 2:
-        # سنة كبيسة؟
+        # Check leap year
         is_leap = (detected_year % 4 == 0 and detected_year % 100 != 0) or (detected_year % 400 == 0)
         days_in_month = 29 if is_leap else 28
     else:
         days_in_month = 30
 
-    # تجميع البصمات لكل موظف ولكل يوم
+    # Group punch records by employee and date
     # structure: employees[emp_id] = { 'name': ..., 'days': { date: [records] } }
     employees_data = {}
 
@@ -142,7 +142,7 @@ def parse_zkteco_file(file_bytes_or_str):
                 "name": r["name"],
                 "days": {}
             }
-        # تحديث الاسم إذا وجد اسم أطول أو أدق
+        # Update employee name if a longer/more complete string is found
         if len(r["name"]) > len(employees_data[eid]["name"]):
             employees_data[eid]["name"] = r["name"]
 
@@ -151,7 +151,7 @@ def parse_zkteco_file(file_bytes_or_str):
             employees_data[eid]["days"][d] = []
         employees_data[eid]["days"][d].append(r)
 
-    # تلخيص حضور كل موظف
+    # Summarize employee attendance
     parsed_employees = []
 
     for eid, info in employees_data.items():
@@ -162,12 +162,12 @@ def parse_zkteco_file(file_bytes_or_str):
 
         for d, recs in info["days"].items():
             attended_dates.add(d)
-            # فحص الجمعة (في بايثون Monday=0, Friday=4)
+            # Check Friday (in Python Monday=0, Friday=4)
             is_friday = (d.weekday() == 4)
             if is_friday:
                 friday_dates.add(d)
 
-            # تحديد بصمة الدخول الأولى وبصمة الخروج الأخيرة
+            # Identify earliest check-in and latest check-out
             recs_sorted = sorted(recs, key=lambda x: x["datetime"])
             check_in = recs_sorted[0]["datetime"]
             check_out = recs_sorted[-1]["datetime"] if len(recs_sorted) > 1 else None
@@ -201,7 +201,7 @@ def parse_zkteco_file(file_bytes_or_str):
             "daily_details": daily_details
         })
 
-    # ترتيب الموظفين بحسب الاسم
+    # Sort employees alphabetically by name
     parsed_employees.sort(key=lambda x: x["name"])
 
     return {

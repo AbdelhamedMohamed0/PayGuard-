@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-database.py - وحدة إدارة قاعدة البيانات المحلية SQLite
-تحفظ بيانات الموظفين الأساسية وكشوف المرتبات وسجلات السلف ورصيد السلف المتبقي
-تضمن حفظ قاعدة البيانات دائماً بجوار ملف الـ EXE وليس في المجلد المؤقت
+database.py - SQLite database management module for PayGuard.
+Stores permanent employee profiles, monthly payroll sheets, and loan balance rollover records.
+Ensures the database is saved adjacent to the executable, avoiding temporary directories.
 """
 
 import sqlite3
@@ -12,19 +12,19 @@ from datetime import datetime
 
 def get_app_data_dir():
     """
-    الحصول على المسار المناسب لحفظ قاعدة البيانات والتقارير عبر المنصات المختلفة (Windows, macOS, Linux)
-    مع مراعاة حزم التطبيقات المقفلة والأذونات.
+    Get the appropriate storage directory for SQLite database and export files across platforms (Windows, macOS, Linux),
+    taking frozen packages and system permissions into account.
     """
     if getattr(sys, 'frozen', False):
         exe_dir = os.path.dirname(sys.executable)
         
-        # في نظام macOS داخل حزمة .app يكون المسار للقراءة فقط (Contents/MacOS)
+        # On macOS inside a .app bundle, Contents/MacOS is read-only
         if sys.platform == "darwin" and "Contents/MacOS" in exe_dir:
             user_data = os.path.expanduser("~/Library/Application Support/PayGuard")
             os.makedirs(user_data, exist_ok=True)
             return user_data
             
-        # فحص إمكانية الكتابة بجوار الملف التنفيذي
+        # Check write permissions adjacent to the executable
         try:
             test_file = os.path.join(exe_dir, ".pg_write_test")
             with open(test_file, "w") as f:
@@ -32,7 +32,7 @@ def get_app_data_dir():
             os.remove(test_file)
             return exe_dir
         except Exception:
-            # مسار المستخدم الافتراضي لكل منصة عند تعذر الكتابة المباشرة
+            # Fallback to platform user data directory if direct write is denied
             if sys.platform == "win32":
                 base = os.getenv("APPDATA", os.path.expanduser("~"))
                 user_data = os.path.join(base, "PayGuard")
@@ -43,7 +43,7 @@ def get_app_data_dir():
             os.makedirs(user_data, exist_ok=True)
             return user_data
     else:
-        # في بيئة التطوير العادية
+        # In standard development environment
         return os.path.dirname(os.path.abspath(__file__))
 
 BASE_DIR = get_app_data_dir()
@@ -58,7 +58,7 @@ def init_db():
     conn = get_connection()
     c = conn.cursor()
     
-    # 1. جدول الموظفين الدائم
+    # 1. Permanent employees table
     c.execute('''
         CREATE TABLE IF NOT EXISTS employees (
             emp_id TEXT PRIMARY KEY,
@@ -81,7 +81,7 @@ def init_db():
         except:
             pass
 
-    # 2. جدول الشهور المكتشفة والمحفوظة (الأرشيف)
+    # 2. Monthly payroll archive table
     c.execute('''
         CREATE TABLE IF NOT EXISTS monthly_sheets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -97,7 +97,7 @@ def init_db():
         )
     ''')
 
-    # 3. جدول تفاصيل مرتبات الموظفين لكل شهر
+    # 3. Monthly employee payroll records table
     c.execute('''
         CREATE TABLE IF NOT EXISTS employee_payroll_records (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -192,7 +192,7 @@ def save_monthly_sheet(month_name, year, month, days_in_month, total_logs, start
     return sheet_id
 
 def get_all_monthly_sheets():
-    """الحصول على قائمة جميع الشهور المحفوظة في الأرشيف"""
+    """Retrieve list of all archived monthly sheets."""
     conn = get_connection()
     c = conn.cursor()
     c.execute("SELECT * FROM monthly_sheets ORDER BY id DESC")
@@ -252,7 +252,7 @@ def save_payroll_record(rec):
             updated_at = CURRENT_TIMESTAMP
     ''', rec)
 
-    # تحديث رصيد السلفة المتبقي في بطاقة الموظف الدائمة للشهر القادم
+    # Update remaining loan balance in permanent employee profile for next month
     c.execute('''
         UPDATE employees 
         SET remaining_advance = ?,
@@ -281,4 +281,5 @@ def delete_monthly_sheet(month_name):
 
 if __name__ == '__main__':
     init_db()
-    print("قاعدة البيانات تم إنشاؤها في:", DB_PATH)
+    print("Database successfully initialized at:", DB_PATH)
+

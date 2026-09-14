@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-exporter.py - وحدة تصدير التقارير إلى Excel
-تنسق كشوف المرتبات الشاملة ومفردات السلف والمرتبات
+exporter.py - Excel report generation module for PayGuard.
+Formats and exports comprehensive monthly payroll sheets, earnings, and loan balances.
 """
 
 import os
@@ -11,17 +11,17 @@ from openpyxl.utils import get_column_letter
 
 def export_payroll_to_excel(records, month_name, filepath, lang="ar"):
     """
-    تصدير كشف المرتبات إلى ملف Excel منسق واحترافي باللغة العربية أو الإنجليزية مع رصيد السلف
+    Export payroll records to a formatted Excel workbook in Arabic or English with loan tracking columns.
     """
     is_en = (str(lang).lower() == "en")
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = f"Payroll {month_name}" if is_en else f"مرتبات {month_name}"
     
-    # اتجاه الورقة: من اليمين لليسار للعربي ومن اليسار لليمين للإنجليزي
+    # Sheet reading direction: RTL for Arabic, LTR for English
     ws.views.sheetView[0].rightToLeft = not is_en
 
-    # 1. عنوان التقرير الرئيسي
+    # 1. Report title block
     ws.merge_cells("A1:V1")
     title_cell = ws["A1"]
     title_cell.value = f"PayGuard — Monthly Payroll Sheet & Loan Balances ({month_name})" if is_en else f"PayGuard — كشف كروكي المرتبات الشهري ورصيد السلف ({month_name})"
@@ -30,7 +30,7 @@ def export_payroll_to_excel(records, month_name, filepath, lang="ar"):
     title_cell.alignment = Alignment(horizontal="center", vertical="center")
     ws.row_dimensions[1].height = 40
 
-    # 2. ترويسة الأعمدة
+    # 2. Column headers
     if is_en:
         headers = [
             "#", "Emp ID", "Employee Name", "Basic Salary", "Work Hours",
@@ -46,7 +46,7 @@ def export_payroll_to_excel(records, month_name, filepath, lang="ar"):
             "إجمالي السلفة", "تسديد سلفة (مخصوم)", "المتبقي من السلفة", "خصومات", "صافي الراتب (ج.م)", "ملاحظات"
         ]
     
-    ws.append([]) # سطر فاصل فارغ
+    ws.append([]) # Blank separator row
     ws.append(headers)
     ws.row_dimensions[3].height = 28
 
@@ -67,7 +67,7 @@ def export_payroll_to_excel(records, month_name, filepath, lang="ar"):
         cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
         cell.border = thin_border
 
-    # 3. إدراج بيانات الموظفين
+    # 3. Insert employee records
     start_row = 4
     for idx, r in enumerate(records, 1):
         total_adv = float(r.get("total_advance") or 0.0)
@@ -120,16 +120,16 @@ def export_payroll_to_excel(records, month_name, filepath, lang="ar"):
             if col_idx in [4, 6, 7, 12, 14, 15, 16, 17, 18, 19, 20, 21]:
                 cell.number_format = '#,##0.00'
             
-            # تمييز السلف
+            # Highlight loan columns
             if col_idx in [17, 18, 19] and (total_adv > 0 or paid_adv > 0):
                 cell.font = Font(name="Arial", size=10, bold=True, color="991B1B")
 
-            # تمييز صافي الراتب
+            # Highlight net salary column
             if col_idx == 21:
                 cell.font = Font(name="Arial", size=11, bold=True, color="15803D")
                 cell.fill = PatternFill(start_color="DCFCE7", end_color="DCFCE7", fill_type="solid")
 
-    # 4. سطر الإجماليات النهائي
+    # 4. Total summary row
     last_row = start_row + len(records)
     ws.cell(row=last_row, column=1).value = "Total" if is_en else "الإجمالي"
     ws.cell(row=last_row, column=1).font = Font(name="Arial", size=11, bold=True, color="FFFFFF")
@@ -154,7 +154,7 @@ def export_payroll_to_excel(records, month_name, filepath, lang="ar"):
 
     ws.row_dimensions[last_row].height = 28
 
-    # 5. ضبط عروض الأعمدة
+    # 5. Auto-fit column widths
     for col in ws.columns:
         max_len = 0
         col_letter = get_column_letter(col[0].column)
