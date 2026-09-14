@@ -118,6 +118,7 @@ def parse_zkteco_file(file_bytes_or_str):
     # Determine primary month and year
     detected_month_num = min_date.month
     detected_year = min_date.year
+    month_key = f"{detected_year:04d}-{detected_month_num:02d}"
     month_name = f"{ARABIC_MONTHS[detected_month_num - 1]} {detected_year}"
 
     # Calculate actual days in month
@@ -206,6 +207,7 @@ def parse_zkteco_file(file_bytes_or_str):
 
     return {
         "meta": {
+            "month_key": month_key,
             "month_name": month_name,
             "year": detected_year,
             "month": detected_month_num,

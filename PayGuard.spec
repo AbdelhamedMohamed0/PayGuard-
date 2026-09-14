@@ -1,12 +1,22 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import os
 import sys
+
+base_dir = os.path.abspath(os.path.dirname(SPEC)) if 'SPEC' in locals() else os.path.abspath('.')
+win_icon = os.path.join(base_dir, 'assets', 'icons', 'icon.ico')
+mac_icon = os.path.join(base_dir, 'assets', 'icons', 'icon.icns')
+
+datas = [('templates', 'templates')]
+assets_dir = os.path.join(base_dir, 'assets')
+if os.path.exists(assets_dir):
+    datas.append(('assets', 'assets'))
 
 a = Analysis(
     ['app.py'],
     pathex=[],
     binaries=[],
-    datas=[('templates', 'templates')],
+    datas=datas,
     hiddenimports=['jinja2', 'openpyxl'],
     hookspath=[],
     hooksconfig={},
@@ -36,13 +46,14 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=win_icon if os.path.exists(win_icon) else 'assets/icons/icon.ico',
 )
 
 if sys.platform == 'darwin':
     app = BUNDLE(
         exe,
         name='PayGuard.app',
-        icon=None,
+        icon=mac_icon if os.path.exists(mac_icon) else 'assets/icons/icon.icns',
         bundle_identifier='com.payguard.payroll',
         info_plist={
             'NSHighResolutionCapable': 'True',

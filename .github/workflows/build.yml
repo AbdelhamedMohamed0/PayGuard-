@@ -60,6 +60,23 @@ jobs:
         run: |
           python test_payroll.py
 
+      - name: Generate macOS .icns Icon
+        if: matrix.platform == 'macos'
+        run: |
+          mkdir -p icon.iconset
+          sips -z 16 16     assets/icons/icon_1024.png --out icon.iconset/icon_16x16.png
+          sips -z 32 32     assets/icons/icon_1024.png --out icon.iconset/icon_16x16@2x.png
+          sips -z 32 32     assets/icons/icon_1024.png --out icon.iconset/icon_32x32.png
+          sips -z 64 64     assets/icons/icon_1024.png --out icon.iconset/icon_32x32@2x.png
+          sips -z 128 128   assets/icons/icon_1024.png --out icon.iconset/icon_128x128.png
+          sips -z 256 256   assets/icons/icon_1024.png --out icon.iconset/icon_128x128@2x.png
+          sips -z 256 256   assets/icons/icon_1024.png --out icon.iconset/icon_256x256.png
+          sips -z 512 512   assets/icons/icon_1024.png --out icon.iconset/icon_256x256@2x.png
+          sips -z 512 512   assets/icons/icon_1024.png --out icon.iconset/icon_512x512.png
+          cp assets/icons/icon_1024.png icon.iconset/icon_512x512@2x.png
+          iconutil -c icns icon.iconset -o assets/icons/icon.icns
+          rm -rf icon.iconset
+
       - name: Obfuscate Code with PyArmor (If Enabled)
         if: ${{ github.event.inputs.use_pyarmor == true || github.event.inputs.use_pyarmor == 'true' }}
         run: |
@@ -122,10 +139,10 @@ jobs:
           Terminal=false
           EOF
 
-          cat << 'EOF' > AppDir/usr/share/icons/hicolor/256x256/apps/payguard.svg
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="256" height="256" fill="#2563eb"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4" fill="none" stroke="#ffffff" stroke-width="2"/></svg>
-          EOF
-          cp AppDir/usr/share/icons/hicolor/256x256/apps/payguard.svg AppDir/payguard.svg
+          # Copy high-resolution Linux icon into AppDir
+          cp assets/icons/icon_256.png AppDir/payguard.png
+          cp assets/icons/icon_256.png AppDir/usr/share/icons/hicolor/256x256/apps/payguard.png
+          cp assets/icons/icon_256.png AppDir/.DirIcon
 
           cat << 'EOF' > AppDir/AppRun
           #!/bin/sh

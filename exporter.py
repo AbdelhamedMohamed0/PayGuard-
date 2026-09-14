@@ -8,15 +8,17 @@ import os
 import openpyxl
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
+from pdf_generator import format_month_label
 
 def export_payroll_to_excel(records, month_name, filepath, lang="ar"):
     """
     Export payroll records to a formatted Excel workbook in Arabic or English with loan tracking columns.
     """
     is_en = (str(lang).lower() == "en")
+    display_month = format_month_label(month_name, lang=lang)
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = f"Payroll {month_name}" if is_en else f"مرتبات {month_name}"
+    ws.title = f"Payroll {display_month}" if is_en else f"مرتبات {display_month}"
     
     # Sheet reading direction: RTL for Arabic, LTR for English
     ws.views.sheetView[0].rightToLeft = not is_en
@@ -24,7 +26,7 @@ def export_payroll_to_excel(records, month_name, filepath, lang="ar"):
     # 1. Report title block
     ws.merge_cells("A1:V1")
     title_cell = ws["A1"]
-    title_cell.value = f"PayGuard — Monthly Payroll Sheet & Loan Balances ({month_name})" if is_en else f"PayGuard — كشف كروكي المرتبات الشهري ورصيد السلف ({month_name})"
+    title_cell.value = f"PayGuard — Monthly Payroll Sheet & Loan Balances ({display_month})" if is_en else f"PayGuard — كشف كروكي المرتبات الشهري ورصيد السلف ({display_month})"
     title_cell.font = Font(name="Arial", size=16, bold=True, color="FFFFFF")
     title_cell.fill = PatternFill(start_color="0F172A", end_color="0F172A", fill_type="solid")
     title_cell.alignment = Alignment(horizontal="center", vertical="center")

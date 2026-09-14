@@ -6,6 +6,7 @@ Integrates SQLite database, ZKTeco punch parser, payroll engine, and historical 
 
 import os
 import sys
+import re
 import threading
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, send_file
@@ -32,6 +33,13 @@ CURRENT_MONTH_CACHE = {
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/favicon.ico')
+def favicon():
+    icon_path = os.path.join(database.BASE_DIR, "assets", "icons", "icon.ico")
+    if os.path.exists(icon_path):
+        return send_file(icon_path, mimetype='image/x-icon')
+    return "", 204
 
 @app.route('/get_history')
 def get_history():
@@ -96,7 +104,8 @@ def upload_file():
         total_logs=meta["total_logs"],
         start_date=meta["start_date"],
         end_date=meta["end_date"],
-        friday_factor=2.0
+        friday_factor=2.0,
+        month_key=meta.get("month_key")
     )
 
     # Enrich and evaluate each employee record against local database (new vs existing)
@@ -164,6 +173,7 @@ def upload_file():
 
         # Automatically persist employee record to current month sheet
         database.save_payroll_record({
+            "month_key": meta.get("month_key"),
             "month_name": meta["month_name"],
             "emp_id": eid,
             "name": emp_name,
@@ -271,6 +281,7 @@ def save_all_endpoint():
         return jsonify({"error": "لا توجد بيانات موظفين لحفظها"}), 400
 
     meta = CURRENT_MONTH_CACHE.get("meta", {})
+    month_key = meta.get("month_key") or f"{meta.get('year', 2026):04d}-{meta.get('month', 1):02d}"
     database.save_monthly_sheet(
         month_name=month_name,
         year=meta.get("year", 2026),
@@ -279,7 +290,8 @@ def save_all_endpoint():
         total_logs=meta.get("total_logs", len(employees)),
         start_date=meta.get("start_date", ""),
         end_date=meta.get("end_date", ""),
-        friday_factor=float(data.get("friday_factor") or meta.get("friday_factor") or 2.0)
+        friday_factor=float(data.get("friday_factor") or meta.get("friday_factor") or 2.0),
+        month_key=month_key
     )
 
     for emp in employees:
@@ -301,6 +313,7 @@ def save_all_endpoint():
         )
 
         database.save_payroll_record({
+            "month_key": month_key,
             "month_name": month_name,
             "emp_id": eid,
             "name": name,
@@ -325,24 +338,28 @@ def save_all_endpoint():
         })
 
     CURRENT_MONTH_CACHE["meta"]["month_name"] = month_name
+    CURRENT_MONTH_CACHE["meta"]["month_key"] = month_key
     CURRENT_MONTH_CACHE["employees"] = employees
 
     return jsonify({"status": "success", "count": len(employees)})
 
 @app.route('/export_excel')
 def export_excel_endpoint():
-    month = request.args.get('month') or CURRENT_MONTH_CACHE.get("meta", {}).get("month_name", "الشهر")
+    month = request.args.get('month') or CURRENT_MONTH_CACHE.get("meta", {}).get("month_key") or CURRENT_MONTH_CACHE.get("meta", {}).get("month_name", "الشهر")
     lang = request.args.get('lang', 'ar')
     employees = CURRENT_MONTH_CACHE.get("employees", [])
 
-    if not employees or CURRENT_MONTH_CACHE.get("meta", {}).get("month_name") != month:
+    cached_meta = CURRENT_MONTH_CACHE.get("meta", {})
+    if not employees or (cached_meta.get("month_key") != month and cached_meta.get("month_name") != month):
         employees = database.get_saved_payroll_by_month(month)
 
     if not employees:
         return "لا توجد بيانات لتصديرها لهذا الشهر!", 404
 
     is_en = (str(lang).lower() == "en")
-    filename = f"Payroll_{month.replace(' ', '_')}.xlsx" if is_en else f"كشف_مرتبات_{month.replace(' ', '_')}.xlsx"
+    display_month = pdf_generator.format_month_label(month, lang=lang)
+    safe_month = re.sub(r'[\\/*?:"<>|]', '_', str(display_month).strip())
+    filename = f"Payroll_{safe_month}.xlsx" if is_en else f"كشف_مرتبات_{safe_month}.xlsx"
     filepath = os.path.join(database.BASE_DIR, filename)
     exporter.export_payroll_to_excel(employees, month, filepath, lang=lang)
 

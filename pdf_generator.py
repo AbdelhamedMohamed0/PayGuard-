@@ -48,9 +48,53 @@ def find_system_browser():
             return c
     return None
 
+ARABIC_MONTHS = [
+    "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+    "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+]
+ENGLISH_MONTHS = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+]
+MONTH_LOOKUP = {
+    "يناير": 1, "فبراير": 2, "مارس": 3, "أبريل": 4, "مايو": 5, "يونيو": 6,
+    "يوليو": 7, "أغسطس": 8, "سبتمبر": 9, "أكتوبر": 10, "نوفمبر": 11, "ديسمبر": 12,
+    "january": 1, "february": 2, "march": 3, "april": 4, "may": 5, "june": 6,
+    "july": 7, "august": 8, "september": 9, "october": 10, "november": 11, "december": 12,
+    "jan": 1, "feb": 2, "mar": 3, "apr": 4, "jun": 6, "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12
+}
+
+def format_month_label(month_input, lang="ar"):
+    """
+    Format any month identifier (e.g. '2026-07', 'يوليو 2026', 'July 2026')
+    into a localized display string based on lang ('ar' -> 'يوليو 2026', 'en' -> 'July 2026').
+    """
+    if not month_input:
+        return "July 2026" if str(lang).lower() == "en" else "يوليو 2026"
+    s = str(month_input).strip()
+    is_en = (str(lang).lower() == "en")
+
+    # Pattern 1: ISO YYYY-MM
+    m_iso = re.match(r"^(\d{4})-(\d{1,2})$", s)
+    if m_iso:
+        y, m = int(m_iso.group(1)), int(m_iso.group(2))
+        if 1 <= m <= 12:
+            return f"{ENGLISH_MONTHS[m - 1]} {y}" if is_en else f"{ARABIC_MONTHS[m - 1]} {y}"
+
+    # Pattern 2: Text Month + Year
+    m_text = re.search(r"(\d{4})", s)
+    year = int(m_text.group(1)) if m_text else datetime.now().year
+    s_lower = s.lower()
+    for word, m_num in MONTH_LOOKUP.items():
+        if word in s_lower:
+            return f"{ENGLISH_MONTHS[m_num - 1]} {year}" if is_en else f"{ARABIC_MONTHS[m_num - 1]} {year}"
+
+    return s
+
 def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.0, lang="ar"):
     """Build A4-formatted HTML template for employee payslips in Arabic or English."""
     is_en = (str(lang).lower() == "en")
+    display_month = format_month_label(month_name, lang=lang)
     
     name = emp.get("name", "موظف" if not is_en else "Employee")
     emp_id = emp.get("emp_id", "-")
@@ -124,7 +168,7 @@ def build_employee_slip_html(emp, month_name, days_in_month=30, friday_factor=2.
 
     # UI translations dictionary
     t = {
-        "title": f"Payslip Statement — {name} — {month_name}" if is_en else f"مفردات مرتب — {name} — {month_name}",
+        "title": f"Payslip Statement — {name} — {display_month}" if is_en else f"مفردات مرتب — {name} — {display_month}",
         "sys_title": "PayGuard — Smart Payroll & Attendance System" if is_en else "نظام PayGuard الذكي للمرتبات وحضور البصمة",
         "slip_subtitle": "Monthly Employee Payslip — Detailed Statement" if is_en else "قسيمة راتب الموظف الشهرية — كشف استحقاق فردي",
         "date_lbl": "Report Date: " if is_en else "تاريخ التقرير: ",
@@ -647,8 +691,9 @@ def generate_employee_pdf(emp, month_name, output_dir=None, days_in_month=30, fr
 
     # Sanitize file name for filesystem safety across operating systems
     raw_name = emp.get("name") or (f"Employee_{emp.get('emp_id', '0')}" if is_en else f"موظف_{emp.get('emp_id', '0')}")
+    display_month = format_month_label(month_name, lang=lang)
     safe_name = re.sub(r'[\\/*?:"<>|]', '_', str(raw_name).strip())
-    safe_month = re.sub(r'[\\/*?:"<>|]', '_', str(month_name).strip())
+    safe_month = re.sub(r'[\\/*?:"<>|]', '_', str(display_month).strip())
     
     if is_en:
         pdf_filename = f"Salary_Slip_{safe_name}_{safe_month}.pdf"

@@ -4,12 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PayGuard - Smart Payroll & Attendance System</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <meta name="color-scheme" content="light dark">
+    <script>
+        (function() {
+            try {
+                var theme = localStorage.getItem('payguard_theme');
+                var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (theme === 'dark' || (!theme && prefersDark)) {
+                    document.documentElement.classList.add('dark-mode');
+                } else {
+                    document.documentElement.classList.remove('dark-mode');
+                }
+            } catch(e) {}
+        })();
+    </script>
     <!-- High-resolution Arabic & Latin typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
+            color-scheme: light;
+
+            /* Base Palette Constants */
             --pg-navy-deep: #070d18;
             --pg-navy: #0f172a;
             --pg-navy-card: #1e293b;
@@ -30,19 +48,10 @@
             
             --pg-emerald: #10b981;
             --pg-emerald-deep: #059669;
-            --pg-emerald-bg: #ecfdf5;
-            --pg-emerald-border: #a7f3d0;
             
             --pg-amber: #f59e0b;
-            --pg-amber-bg: #fffbeb;
-            --pg-amber-border: #fde68a;
-            
             --pg-rose: #ef4444;
-            --pg-rose-bg: #fef2f2;
-            --pg-rose-border: #fecaca;
-            
             --pg-cyan: #06b6d4;
-            --pg-cyan-bg: #ecfeff;
             
             --pg-radius-sm: 8px;
             --pg-radius-md: 12px;
@@ -50,9 +59,318 @@
             --pg-radius-xl: 22px;
             
             --pg-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --pg-shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+
+            /* Semantic Theme Tokens - Light Mode */
+            --pg-canvas-bg: #f8fafc;
+            --pg-canvas-pattern: rgba(148, 163, 184, 0.12);
+            --pg-canvas-text: #0f172a;
+
+            --pg-card-bg: #ffffff;
+            --pg-card-border: #e2e8f0;
+            --pg-card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
             --pg-shadow-float: 0 20px 35px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
-            --pg-shadow-glow: 0 0 25px rgba(16, 185, 129, 0.2);
+
+            --pg-text-primary: #0f172a;
+            --pg-text-secondary: #334155;
+            --pg-text-muted: #64748b;
+            --pg-text-hint: #94a3b8;
+
+            /* Outline & Action Buttons */
+            --pg-btn-outline-bg: #ffffff;
+            --pg-btn-outline-border: #e2e8f0;
+            --pg-btn-outline-text: #334155;
+            --pg-btn-outline-hover-bg: #f8fafc;
+            --pg-btn-outline-hover-border: #cbd5e1;
+            --pg-btn-outline-hover-text: #0f172a;
+
+            --pg-btn-action-bg: #ffffff;
+            --pg-btn-action-border: #e2e8f0;
+            --pg-btn-action-text: #475569;
+            --pg-btn-action-hover-bg: #eff6ff;
+            --pg-btn-action-hover-border: #2563eb;
+            --pg-btn-action-hover-text: #2563eb;
+
+            /* Form Controls & Inputs */
+            --pg-input-bg: #ffffff;
+            --pg-input-border: #cbd5e1;
+            --pg-input-text: #0f172a;
+            --pg-input-focus-border: #2563eb;
+            --pg-input-focus-ring: rgba(37, 99, 235, 0.12);
+            --pg-input-readonly-bg: #f1f5f9;
+            --pg-input-readonly-text: #64748b;
+
+            /* Highlighted / Dynamic Inputs */
+            --pg-input-amber-bg: #fffbeb;
+            --pg-input-amber-border: #fde68a;
+            --pg-input-amber-text: #b45309;
+
+            --pg-input-rose-bg: #fff1f2;
+            --pg-input-rose-border: #fecaca;
+            --pg-input-rose-text: #be123c;
+
+            --pg-input-danger-bg: #fee2e2;
+            --pg-input-danger-border: #ef4444;
+            --pg-input-danger-text: #dc2626;
+
+            --pg-input-success-bg: #f8fafc;
+            --pg-input-success-border: #86efac;
+            --pg-input-success-text: #15803d;
+
+            /* Table */
+            --pg-table-bg: #ffffff;
+            --pg-table-header-bg: #0f172a;
+            --pg-table-header-text: #ffffff;
+            --pg-table-header-border: #334155;
+            --pg-table-border: #e2e8f0;
+            --pg-table-row-hover: #f8fafc;
+            --pg-table-cell-text: #334155;
+
+            /* Dropzone */
+            --pg-dropzone-bg: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            --pg-dropzone-border: #94a3b8;
+            --pg-dropzone-hover-bg: #eff6ff;
+            --pg-dropzone-hover-border: #2563eb;
+            --pg-dropzone-icon-bg: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            --pg-dropzone-icon-color: #1d4ed8;
+
+            /* KPI Stat Cards */
+            --pg-stat-bg: #ffffff;
+            --pg-stat-border: #e2e8f0;
+            --pg-stat-title: #64748b;
+            --pg-stat-value: #0f172a;
+            --pg-stat-unit: #94a3b8;
+
+            --pg-stat-icon-emerald-bg: #ecfdf5;
+            --pg-stat-icon-emerald-color: #059669;
+            --pg-stat-icon-blue-bg: #eff6ff;
+            --pg-stat-icon-blue-color: #2563eb;
+            --pg-stat-icon-amber-bg: #fffbeb;
+            --pg-stat-icon-amber-color: #d97706;
+            --pg-stat-icon-cyan-bg: #ecfeff;
+            --pg-stat-icon-cyan-color: #0891b2;
+            --pg-stat-icon-slate-bg: #f1f5f9;
+            --pg-stat-icon-slate-color: #475569;
+
+            /* Badges & Tags */
+            --pg-badge-green-bg: #dcfce7;
+            --pg-badge-green-text: #15803d;
+            --pg-badge-green-border: #bbf7d0;
+
+            --pg-badge-blue-bg: #e0f2fe;
+            --pg-badge-blue-text: #0369a1;
+            --pg-badge-blue-border: #bae6fd;
+
+            --pg-badge-amber-bg: #fef3c7;
+            --pg-badge-amber-text: #b45309;
+            --pg-badge-amber-border: #fde68a;
+
+            --pg-badge-red-bg: #fee2e2;
+            --pg-badge-red-text: #b91c1c;
+            --pg-badge-red-border: #fecaca;
+
+            --pg-badge-slate-bg: #f1f5f9;
+            --pg-badge-slate-text: #475569;
+            --pg-badge-slate-border: #e2e8f0;
+
+            --pg-net-pill-bg: #ecfdf5;
+            --pg-net-pill-text: #059669;
+            --pg-net-pill-border: #a7f3d0;
+
+            /* Archive Banner */
+            --pg-banner-bg: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+            --pg-banner-border: #bfdbfe;
+            --pg-banner-text: #1e40af;
+            --pg-banner-month: #1e3a8a;
+
+            /* Over-Deduction Warning Banner */
+            --pg-warn-bg: #fff1f2;
+            --pg-warn-border: #f43f5e;
+            --pg-warn-title: #be123c;
+            --pg-warn-text: #9f1239;
+            --pg-danger-text: #b91c1c;
+
+            /* Modals */
+            --pg-modal-overlay-bg: rgba(7, 13, 24, 0.7);
+            --pg-modal-container-bg: #ffffff;
+            --pg-modal-border: #e2e8f0;
+            --pg-modal-header-bg: #ffffff;
+            --pg-modal-footer-bg: #ffffff;
+            --pg-modal-close-bg: #f1f5f9;
+            --pg-modal-close-text: #64748b;
+            --pg-modal-close-hover-bg: #e2e8f0;
+            --pg-modal-close-hover-text: #0f172a;
+
+            /* Section Labels */
+            --pg-section-label-blue: #2563eb;
+            --pg-section-label-emerald: #059669;
+            --pg-section-label-amber: #b45309;
+            --pg-section-label-slate: #475569;
+
+            /* Toast Notification */
+            --pg-toast-bg: #090e17;
+            --pg-toast-text: #ffffff;
+            --pg-toast-border: rgba(255, 255, 255, 0.15);
+
+            /* Friday Highlight */
+            --pg-friday-color: #0369a1;
+        }
+
+        html.dark-mode {
+            color-scheme: dark;
+
+            /* Semantic Theme Tokens - Dark Mode */
+            --pg-canvas-bg: #0f1420;
+            --pg-canvas-pattern: rgba(255, 255, 255, 0.04);
+            --pg-canvas-text: #f1f5f9;
+
+            --pg-card-bg: #161f30;
+            --pg-card-border: #222f46;
+            --pg-card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.25);
+            --pg-shadow-float: 0 20px 35px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.35);
+
+            --pg-text-primary: #f1f5f9;
+            --pg-text-secondary: #cbd5e1;
+            --pg-text-muted: #94a3b8;
+            --pg-text-hint: #64748b;
+
+            /* Outline & Action Buttons */
+            --pg-btn-outline-bg: #161f30;
+            --pg-btn-outline-border: #26354f;
+            --pg-btn-outline-text: #cbd5e1;
+            --pg-btn-outline-hover-bg: #1e2b42;
+            --pg-btn-outline-hover-border: #38bdf8;
+            --pg-btn-outline-hover-text: #ffffff;
+
+            --pg-btn-action-bg: #1a2438;
+            --pg-btn-action-border: #26354f;
+            --pg-btn-action-text: #94a3b8;
+            --pg-btn-action-hover-bg: rgba(37, 99, 235, 0.2);
+            --pg-btn-action-hover-border: #38bdf8;
+            --pg-btn-action-hover-text: #38bdf8;
+
+            /* Form Controls & Inputs */
+            --pg-input-bg: #0d1524;
+            --pg-input-border: #26354f;
+            --pg-input-text: #f8fafc;
+            --pg-input-focus-border: #38bdf8;
+            --pg-input-focus-ring: rgba(56, 189, 248, 0.2);
+            --pg-input-readonly-bg: #121a29;
+            --pg-input-readonly-text: #94a3b8;
+
+            /* Highlighted / Dynamic Inputs */
+            --pg-input-amber-bg: rgba(245, 158, 11, 0.12);
+            --pg-input-amber-border: rgba(245, 158, 11, 0.35);
+            --pg-input-amber-text: #fbbf24;
+
+            --pg-input-rose-bg: rgba(244, 63, 94, 0.12);
+            --pg-input-rose-border: rgba(244, 63, 94, 0.35);
+            --pg-input-rose-text: #fb7185;
+
+            --pg-input-danger-bg: rgba(239, 68, 68, 0.15);
+            --pg-input-danger-border: rgba(239, 68, 68, 0.4);
+            --pg-input-danger-text: #f87171;
+
+            --pg-input-success-bg: rgba(16, 185, 129, 0.12);
+            --pg-input-success-border: rgba(16, 185, 129, 0.35);
+            --pg-input-success-text: #34d399;
+
+            /* Table */
+            --pg-table-bg: #161f30;
+            --pg-table-header-bg: #0b111c;
+            --pg-table-header-text: #ffffff;
+            --pg-table-header-border: #1e293b;
+            --pg-table-border: #1e2c42;
+            --pg-table-row-hover: rgba(255, 255, 255, 0.04);
+            --pg-table-cell-text: #cbd5e1;
+
+            /* Dropzone */
+            --pg-dropzone-bg: linear-gradient(180deg, #131b2a 0%, #172134 100%);
+            --pg-dropzone-border: #2d3e5a;
+            --pg-dropzone-hover-bg: rgba(37, 99, 235, 0.14);
+            --pg-dropzone-hover-border: #38bdf8;
+            --pg-dropzone-icon-bg: linear-gradient(135deg, rgba(37, 99, 235, 0.25) 0%, rgba(14, 165, 233, 0.25) 100%);
+            --pg-dropzone-icon-color: #38bdf8;
+
+            /* KPI Stat Cards */
+            --pg-stat-bg: #161f30;
+            --pg-stat-border: #222f46;
+            --pg-stat-title: #94a3b8;
+            --pg-stat-value: #f1f5f9;
+            --pg-stat-unit: #64748b;
+
+            --pg-stat-icon-emerald-bg: rgba(16, 185, 129, 0.15);
+            --pg-stat-icon-emerald-color: #34d399;
+            --pg-stat-icon-blue-bg: rgba(37, 99, 235, 0.18);
+            --pg-stat-icon-blue-color: #38bdf8;
+            --pg-stat-icon-amber-bg: rgba(245, 158, 11, 0.15);
+            --pg-stat-icon-amber-color: #fbbf24;
+            --pg-stat-icon-cyan-bg: rgba(6, 182, 212, 0.15);
+            --pg-stat-icon-cyan-color: #22d3ee;
+            --pg-stat-icon-slate-bg: rgba(148, 163, 184, 0.12);
+            --pg-stat-icon-slate-color: #cbd5e1;
+
+            /* Badges & Tags (Distinguishable, High Contrast) */
+            --pg-badge-green-bg: rgba(16, 185, 129, 0.16);
+            --pg-badge-green-text: #34d399;
+            --pg-badge-green-border: rgba(16, 185, 129, 0.35);
+
+            --pg-badge-blue-bg: rgba(56, 189, 248, 0.16);
+            --pg-badge-blue-text: #38bdf8;
+            --pg-badge-blue-border: rgba(56, 189, 248, 0.35);
+
+            --pg-badge-amber-bg: rgba(245, 158, 11, 0.16);
+            --pg-badge-amber-text: #fbbf24;
+            --pg-badge-amber-border: rgba(245, 158, 11, 0.35);
+
+            --pg-badge-red-bg: rgba(239, 68, 68, 0.18);
+            --pg-badge-red-text: #f87171;
+            --pg-badge-red-border: rgba(239, 68, 68, 0.35);
+
+            --pg-badge-slate-bg: rgba(148, 163, 184, 0.15);
+            --pg-badge-slate-text: #cbd5e1;
+            --pg-badge-slate-border: rgba(148, 163, 184, 0.3);
+
+            --pg-net-pill-bg: rgba(16, 185, 129, 0.15);
+            --pg-net-pill-text: #34d399;
+            --pg-net-pill-border: rgba(16, 185, 129, 0.35);
+
+            /* Archive Banner */
+            --pg-banner-bg: linear-gradient(135deg, rgba(30, 58, 138, 0.25) 0%, rgba(6, 78, 59, 0.25) 100%);
+            --pg-banner-border: #1e3a8a;
+            --pg-banner-text: #93c5fd;
+            --pg-banner-month: #60a5fa;
+
+            /* Over-Deduction Warning Banner (Urgent & high contrast) */
+            --pg-warn-bg: rgba(225, 29, 72, 0.15);
+            --pg-warn-border: #f43f5e;
+            --pg-warn-title: #fda4af;
+            --pg-warn-text: #fecdd3;
+            --pg-danger-text: #f87171;
+
+            /* Modals */
+            --pg-modal-overlay-bg: rgba(3, 7, 18, 0.82);
+            --pg-modal-container-bg: #161f30;
+            --pg-modal-border: #222f46;
+            --pg-modal-header-bg: #161f30;
+            --pg-modal-footer-bg: #161f30;
+            --pg-modal-close-bg: #1e2b42;
+            --pg-modal-close-text: #94a3b8;
+            --pg-modal-close-hover-bg: #283955;
+            --pg-modal-close-hover-text: #ffffff;
+
+            /* Section Labels */
+            --pg-section-label-blue: #60a5fa;
+            --pg-section-label-emerald: #34d399;
+            --pg-section-label-amber: #fbbf24;
+            --pg-section-label-slate: #94a3b8;
+
+            /* Toast Notification */
+            --pg-toast-bg: #1e293b;
+            --pg-toast-text: #ffffff;
+            --pg-toast-border: rgba(255, 255, 255, 0.18);
+
+            /* Friday Highlight */
+            --pg-friday-color: #38bdf8;
         }
 
         * {
@@ -79,14 +397,15 @@
         }
 
         body {
-            background-color: var(--pg-slate-50);
-            color: var(--pg-slate-900);
+            background-color: var(--pg-canvas-bg);
+            color: var(--pg-canvas-text);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             line-height: 1.5;
-            background-image: radial-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+            background-image: radial-gradient(var(--pg-canvas-pattern) 1px, transparent 1px);
             background-size: 24px 24px;
+            transition: background-color 0.2s ease, color 0.2s ease;
         }
 
         /* -------------------------------------------------------------
@@ -262,6 +581,29 @@
             border-color: #3b82f6;
         }
 
+        /* Dark / Light Theme toggle button */
+        .btn-theme-toggle {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 7px 14px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.16);
+            border-color: #38bdf8;
+            color: #38bdf8;
+            transform: translateY(-1px);
+        }
+
         /* Language switcher button */
         .btn-lang-toggle {
             background: rgba(255, 255, 255, 0.08);
@@ -343,15 +685,15 @@
         }
 
         .pg-btn-outline {
-            background: #ffffff;
-            color: var(--pg-slate-700);
-            border: 1px solid var(--pg-slate-200);
+            background: var(--pg-btn-outline-bg);
+            color: var(--pg-btn-outline-text);
+            border: 1px solid var(--pg-btn-outline-border);
         }
 
         .pg-btn-outline:hover {
-            background: var(--pg-slate-50);
-            border-color: var(--pg-slate-300);
-            color: var(--pg-slate-900);
+            background: var(--pg-btn-outline-hover-bg);
+            border-color: var(--pg-btn-outline-hover-border);
+            color: var(--pg-btn-outline-hover-text);
             transform: translateY(-1px);
         }
 
@@ -386,12 +728,13 @@
         }
 
         .pg-card {
-            background: #ffffff;
+            background: var(--pg-card-bg);
             border-radius: var(--pg-radius-lg);
-            border: 1px solid var(--pg-slate-200);
+            border: 1px solid var(--pg-card-border);
             padding: 26px;
-            box-shadow: var(--pg-shadow-card);
+            box-shadow: var(--pg-card-shadow);
             position: relative;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
         }
 
         .pg-card-header {
@@ -406,7 +749,7 @@
         .pg-card-title {
             font-size: 18px;
             font-weight: 800;
-            color: var(--pg-slate-900);
+            color: var(--pg-text-primary);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -414,7 +757,7 @@
 
         .pg-card-subtitle {
             font-size: 13px;
-            color: var(--pg-slate-500);
+            color: var(--pg-text-muted);
             margin-top: 3px;
             font-weight: 500;
         }
@@ -422,14 +765,14 @@
         /* Archive restored notification bar */
         .archive-banner {
             display: none;
-            background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
-            border: 1px solid #bfdbfe;
+            background: var(--pg-banner-bg);
+            border: 1px solid var(--pg-banner-border);
             border-radius: var(--pg-radius-md);
             padding: 14px 22px;
             justify-content: space-between;
             align-items: center;
             font-size: 13px;
-            color: #1e40af;
+            color: var(--pg-banner-text);
             font-weight: 700;
             box-shadow: var(--pg-shadow-xs);
         }
@@ -444,9 +787,9 @@
            DROPZONE - Biometric file upload area
         ------------------------------------------------------------- */
         .dropzone {
-            border: 2px dashed #94a3b8;
+            border: 2px dashed var(--pg-dropzone-border);
             border-radius: var(--pg-radius-lg);
-            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            background: var(--pg-dropzone-bg);
             padding: 44px 24px;
             text-align: center;
             cursor: pointer;
@@ -455,9 +798,9 @@
         }
 
         .dropzone:hover, .dropzone.dragover {
-            border-color: #2563eb;
-            background: #eff6ff;
-            box-shadow: 0 0 20px rgba(37, 99, 235, 0.1);
+            border-color: var(--pg-dropzone-hover-border);
+            background: var(--pg-dropzone-hover-bg);
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.15);
         }
 
         .dropzone-icon {
@@ -467,8 +810,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            color: #1d4ed8;
+            background: var(--pg-dropzone-icon-bg);
+            color: var(--pg-dropzone-icon-color);
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
         }
@@ -481,13 +824,13 @@
         .dropzone h3 {
             font-size: 16px;
             font-weight: 800;
-            color: var(--pg-slate-800);
+            color: var(--pg-text-primary);
             margin-bottom: 6px;
         }
 
         .dropzone p {
             font-size: 13px;
-            color: var(--pg-slate-500);
+            color: var(--pg-text-muted);
             margin-bottom: 16px;
         }
 
@@ -501,14 +844,14 @@
         }
 
         .stat-card {
-            background: #ffffff;
+            background: var(--pg-stat-bg);
             border-radius: var(--pg-radius-md);
-            border: 1px solid var(--pg-slate-200);
+            border: 1px solid var(--pg-stat-border);
             padding: 18px 20px;
-            box-shadow: var(--pg-shadow-card);
+            box-shadow: var(--pg-card-shadow);
             position: relative;
             overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
         }
 
         .stat-card:hover {
@@ -541,7 +884,7 @@
         .stat-title {
             font-size: 12px;
             font-weight: 700;
-            color: var(--pg-slate-500);
+            color: var(--pg-stat-title);
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
@@ -557,16 +900,16 @@
             color: var(--stat-accent, #2563eb);
         }
 
-        .stat-card.emerald .stat-icon { background: #ecfdf5; color: #059669; }
-        .stat-card.blue .stat-icon { background: #eff6ff; color: #2563eb; }
-        .stat-card.amber .stat-icon { background: #fffbeb; color: #d97706; }
-        .stat-card.cyan .stat-icon { background: #ecfeff; color: #0891b2; }
-        .stat-card.slate .stat-icon { background: #f1f5f9; color: #475569; }
+        .stat-card.emerald .stat-icon { background: var(--pg-stat-icon-emerald-bg); color: var(--pg-stat-icon-emerald-color); }
+        .stat-card.blue .stat-icon { background: var(--pg-stat-icon-blue-bg); color: var(--pg-stat-icon-blue-color); }
+        .stat-card.amber .stat-icon { background: var(--pg-stat-icon-amber-bg); color: var(--pg-stat-icon-amber-color); }
+        .stat-card.cyan .stat-icon { background: var(--pg-stat-icon-cyan-bg); color: var(--pg-stat-icon-cyan-color); }
+        .stat-card.slate .stat-icon { background: var(--pg-stat-icon-slate-bg); color: var(--pg-stat-icon-slate-color); }
 
         .stat-value {
             font-size: 22px;
             font-weight: 900;
-            color: var(--pg-slate-900);
+            color: var(--pg-stat-value);
             letter-spacing: -0.5px;
             line-height: 1.2;
         }
@@ -574,7 +917,7 @@
         .stat-unit {
             font-size: 13px;
             font-weight: 700;
-            color: var(--pg-slate-400);
+            color: var(--pg-stat-unit);
             margin-inline-start: 4px;
         }
 
@@ -604,7 +947,7 @@
             transform: translateY(-50%);
             width: 16px;
             height: 16px;
-            color: var(--pg-slate-400);
+            color: var(--pg-text-hint);
             pointer-events: none;
         }
 
@@ -613,18 +956,18 @@
             padding: 9px 14px;
             padding-inline-start: 36px;
             border-radius: var(--pg-radius-md);
-            border: 1px solid var(--pg-slate-300);
-            background: #ffffff;
+            border: 1px solid var(--pg-input-border);
+            background: var(--pg-input-bg);
             font-size: 13px;
             font-weight: 600;
-            color: var(--pg-slate-800);
+            color: var(--pg-input-text);
             outline: none;
             transition: all 0.2s;
         }
 
         .search-box:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+            border-color: var(--pg-input-focus-border);
+            box-shadow: 0 0 0 3px var(--pg-input-focus-ring);
         }
 
         .toolbar-actions {
@@ -638,20 +981,22 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            background: var(--pg-slate-100);
+            background: var(--pg-input-readonly-bg);
             padding: 4px 10px;
             border-radius: var(--pg-radius-sm);
-            border: 1px solid var(--pg-slate-200);
+            border: 1px solid var(--pg-card-border);
             font-size: 12px;
             font-weight: 700;
-            color: var(--pg-slate-700);
+            color: var(--pg-text-secondary);
         }
 
         .factor-control input {
             width: 50px;
             padding: 4px 6px;
             border-radius: 6px;
-            border: 1px solid var(--pg-slate-300);
+            border: 1px solid var(--pg-input-border);
+            background: var(--pg-input-bg);
+            color: var(--pg-input-text);
             text-align: center;
             font-weight: 800;
             font-size: 12px;
@@ -664,7 +1009,7 @@
         .table-responsive {
             overflow-x: auto;
             border-radius: var(--pg-radius-md);
-            border: 1px solid var(--pg-slate-200);
+            border: 1px solid var(--pg-card-border);
             box-shadow: var(--pg-shadow-xs);
         }
 
@@ -673,12 +1018,12 @@
             border-collapse: collapse;
             text-align: start;
             font-size: 13px;
-            background: #ffffff;
+            background: var(--pg-table-bg);
         }
 
         .payroll-table thead {
-            background: #0f172a;
-            color: #ffffff;
+            background: var(--pg-table-header-bg);
+            color: var(--pg-table-header-text);
             position: sticky;
             top: 0;
             z-index: 10;
@@ -689,17 +1034,17 @@
             font-weight: 700;
             font-size: 12px;
             letter-spacing: 0.3px;
-            border-bottom: 2px solid #334155;
+            border-bottom: 2px solid var(--pg-table-header-border);
             white-space: nowrap;
         }
 
         .payroll-table td {
             padding: 12px 14px;
-            border-bottom: 1px solid var(--pg-slate-200);
+            border-bottom: 1px solid var(--pg-table-border);
             vertical-align: middle;
             white-space: nowrap;
             font-weight: 600;
-            color: var(--pg-slate-700);
+            color: var(--pg-table-cell-text);
         }
 
         .payroll-table tbody tr {
@@ -707,7 +1052,7 @@
         }
 
         .payroll-table tbody tr:hover {
-            background-color: #f8fafc;
+            background-color: var(--pg-table-row-hover);
         }
 
         /* Employee avatar badge */
@@ -734,13 +1079,13 @@
 
         .emp-name-text {
             font-weight: 800;
-            color: var(--pg-slate-900);
+            color: var(--pg-text-primary);
             font-size: 13px;
         }
 
         .emp-sub-id {
             font-size: 11px;
-            color: var(--pg-slate-400);
+            color: var(--pg-text-hint);
             font-weight: 600;
         }
 
@@ -755,20 +1100,20 @@
             gap: 4px;
         }
 
-        .pg-badge-green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
-        .pg-badge-blue { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
-        .pg-badge-amber { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
-        .pg-badge-red { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
-        .pg-badge-slate { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+        .pg-badge-green { background: var(--pg-badge-green-bg); color: var(--pg-badge-green-text); border: 1px solid var(--pg-badge-green-border); }
+        .pg-badge-blue { background: var(--pg-badge-blue-bg); color: var(--pg-badge-blue-text); border: 1px solid var(--pg-badge-blue-border); }
+        .pg-badge-amber { background: var(--pg-badge-amber-bg); color: var(--pg-badge-amber-text); border: 1px solid var(--pg-badge-amber-border); }
+        .pg-badge-red { background: var(--pg-badge-red-bg); color: var(--pg-badge-red-text); border: 1px solid var(--pg-badge-red-border); }
+        .pg-badge-slate { background: var(--pg-badge-slate-bg); color: var(--pg-badge-slate-text); border: 1px solid var(--pg-badge-slate-border); }
 
         .net-salary-pill {
             font-size: 14px;
             font-weight: 900;
-            color: #059669;
-            background: #ecfdf5;
+            color: var(--pg-net-pill-text);
+            background: var(--pg-net-pill-bg);
             padding: 4px 10px;
             border-radius: 8px;
-            border: 1px solid #a7f3d0;
+            border: 1px solid var(--pg-net-pill-border);
             display: inline-block;
         }
 
@@ -782,27 +1127,27 @@
             width: 30px;
             height: 30px;
             border-radius: 7px;
-            border: 1px solid var(--pg-slate-200);
-            background: #ffffff;
+            border: 1px solid var(--pg-btn-action-border);
+            background: var(--pg-btn-action-bg);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: var(--pg-slate-600);
+            color: var(--pg-btn-action-text);
             transition: all 0.2s;
         }
 
         .btn-action-icon:hover {
-            border-color: #2563eb;
-            color: #2563eb;
-            background: #eff6ff;
+            border-color: var(--pg-btn-action-hover-border);
+            color: var(--pg-btn-action-hover-text);
+            background: var(--pg-btn-action-hover-bg);
             transform: scale(1.08);
         }
 
         .btn-action-icon.pdf-btn:hover {
             border-color: #ef4444;
             color: #ef4444;
-            background: #fef2f2;
+            background: rgba(239, 68, 68, 0.15);
         }
 
         /* -------------------------------------------------------------
@@ -812,7 +1157,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(7, 13, 24, 0.7);
+            background: var(--pg-modal-overlay-bg);
             backdrop-filter: blur(8px);
             z-index: 1000;
             justify-content: center;
@@ -821,7 +1166,7 @@
         }
 
         .modal-container {
-            background: #ffffff;
+            background: var(--pg-modal-container-bg);
             border-radius: var(--pg-radius-xl);
             max-width: 860px;
             width: 100%;
@@ -829,7 +1174,7 @@
             overflow-y: auto;
             box-shadow: var(--pg-shadow-float);
             animation: pgModalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1px solid var(--pg-slate-200);
+            border: 1px solid var(--pg-modal-border);
         }
 
         @keyframes pgModalIn {
@@ -839,13 +1184,13 @@
 
         .modal-header {
             padding: 18px 26px;
-            border-bottom: 1px solid var(--pg-slate-200);
+            border-bottom: 1px solid var(--pg-modal-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
-            background: #ffffff;
+            background: var(--pg-modal-header-bg);
             z-index: 20;
         }
 
@@ -858,11 +1203,11 @@
         .modal-header h3 {
             font-size: 17px;
             font-weight: 800;
-            color: var(--pg-slate-900);
+            color: var(--pg-text-primary);
         }
 
         .modal-close-btn {
-            background: var(--pg-slate-100);
+            background: var(--pg-modal-close-bg);
             border: none;
             width: 32px;
             height: 32px;
@@ -872,13 +1217,13 @@
             align-items: center;
             justify-content: center;
             font-size: 16px;
-            color: var(--pg-slate-500);
+            color: var(--pg-modal-close-text);
             transition: all 0.2s;
         }
 
         .modal-close-btn:hover {
-            background: var(--pg-slate-200);
-            color: var(--pg-slate-900);
+            background: var(--pg-modal-close-hover-bg);
+            color: var(--pg-modal-close-hover-text);
         }
 
         .modal-body {
@@ -888,13 +1233,25 @@
         .section-label {
             font-size: 12px;
             font-weight: 800;
-            color: #2563eb;
+            color: var(--pg-section-label-blue);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
             gap: 6px;
+        }
+
+        .section-label.section-label-emerald {
+            color: var(--pg-section-label-emerald) !important;
+        }
+
+        .section-label.section-label-amber {
+            color: var(--pg-section-label-amber) !important;
+        }
+
+        .section-label.section-label-slate {
+            color: var(--pg-section-label-slate) !important;
         }
 
         .form-grid-2 {
@@ -920,41 +1277,83 @@
         .pg-form-group label {
             font-size: 12px;
             font-weight: 700;
-            color: var(--pg-slate-700);
+            color: var(--pg-text-secondary);
         }
 
         .pg-form-group input {
             padding: 9px 12px;
-            border: 1px solid var(--pg-slate-300);
+            border: 1px solid var(--pg-input-border);
             border-radius: var(--pg-radius-sm);
             font-size: 13px;
             font-weight: 600;
-            color: var(--pg-slate-900);
+            background: var(--pg-input-bg);
+            color: var(--pg-input-text);
             outline: none;
             transition: all 0.2s;
         }
 
         .pg-form-group input:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            border-color: var(--pg-input-focus-border);
+            box-shadow: 0 0 0 3px var(--pg-input-focus-ring);
         }
 
         .pg-form-group input[readonly] {
-            background: var(--pg-slate-100);
-            color: var(--pg-slate-500);
+            background: var(--pg-input-readonly-bg);
+            color: var(--pg-input-readonly-text);
         }
 
         .form-hint {
             font-size: 10.5px;
-            color: var(--pg-slate-400);
+            color: var(--pg-text-hint);
             font-weight: 600;
+        }
+
+        /* Modal Highlight Classes */
+        .input-amber-highlight {
+            background: var(--pg-input-amber-bg) !important;
+            color: var(--pg-input-amber-text) !important;
+            border-color: var(--pg-input-amber-border) !important;
+            font-weight: 800;
+        }
+
+        .input-rose-highlight {
+            background: var(--pg-input-rose-bg) !important;
+            color: var(--pg-input-rose-text) !important;
+            border-color: var(--pg-input-rose-border) !important;
+            font-weight: 800;
+        }
+
+        .rem-danger {
+            background-color: var(--pg-input-danger-bg) !important;
+            color: var(--pg-input-danger-text) !important;
+            border-color: var(--pg-input-danger-border) !important;
+        }
+
+        .rem-normal {
+            background-color: var(--pg-input-success-bg) !important;
+            color: var(--pg-input-success-text) !important;
+            border-color: var(--pg-input-success-border) !important;
+        }
+
+        .danger-highlight {
+            color: var(--pg-danger-text) !important;
+            font-weight: 800;
+        }
+
+        .banner-month-highlight {
+            color: var(--pg-banner-month) !important;
+        }
+
+        .friday-highlight {
+            color: var(--pg-friday-color) !important;
+            font-weight: bold;
         }
 
         /* Instant financial warning for over-deductions */
         .advance-warning-box {
             display: none;
-            background: #fff1f2;
-            border: 1.5px solid #f43f5e;
+            background: var(--pg-warn-bg);
+            border: 1.5px solid var(--pg-warn-border);
             border-radius: var(--pg-radius-md);
             padding: 14px 18px;
             margin-bottom: 18px;
@@ -963,12 +1362,12 @@
         }
 
         @keyframes pulseWarn {
-            0%, 100% { border-color: #f43f5e; }
+            0%, 100% { border-color: var(--pg-warn-border); }
             50% { border-color: #fda4af; }
         }
 
         .advance-warning-title {
-            color: #be123c;
+            color: var(--pg-warn-title);
             font-weight: 800;
             font-size: 13px;
             display: flex;
@@ -978,7 +1377,7 @@
         }
 
         .advance-warning-text {
-            color: #9f1239;
+            color: var(--pg-warn-text);
             font-size: 12px;
             font-weight: 600;
             line-height: 1.45;
@@ -1019,13 +1418,13 @@
 
         .modal-footer {
             padding: 16px 26px;
-            border-top: 1px solid var(--pg-slate-200);
+            border-top: 1px solid var(--pg-modal-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             bottom: 0;
-            background: #ffffff;
+            background: var(--pg-modal-footer-bg);
             z-index: 20;
             flex-wrap: wrap;
             gap: 10px;
@@ -1045,15 +1444,15 @@
             bottom: 28px;
             left: 50%;
             transform: translateX(-50%) translateY(50px);
-            background: #090e17;
-            color: #ffffff;
+            background: var(--pg-toast-bg);
+            color: var(--pg-toast-text);
             padding: 12px 24px;
             border-radius: 30px;
             font-weight: 700;
             font-size: 13.5px;
             box-shadow: var(--pg-shadow-float);
             z-index: 9999;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid var(--pg-toast-border);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -1094,7 +1493,7 @@
             margin-inline-start: 4px;
             margin-inline-end: 0;
         }
-    </style>
+</style>
 </head>
 <body>
 
@@ -1140,6 +1539,12 @@
             </button>
             <input type="file" id="fileInput" accept=".txt,.log" style="display: none;" onchange="handleFileSelect(event)">
 
+                        <!-- Dark / Light theme toggle button -->
+            <button class="btn-theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Dark/Light Mode / تبديل الوضع الليلي">
+                <span id="themeBtnIcon">🌙</span>
+                <span id="themeBtnText">داكن</span>
+            </button>
+
             <!-- Instant language toggle button -->
             <button class="btn-lang-toggle" id="langToggleBtn" onclick="toggleLanguage()" title="Switch Language / تبديل اللغة">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
@@ -1157,7 +1562,7 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 <div>
                     <span id="archiveMonthLabel">أنت تتصفح حالياً أرشيف شهر:</span>
-                    <strong id="bannerMonthName" style="color:#1e3a8a; font-size:14px; margin-inline: 4px;">-</strong>
+                    <strong id="bannerMonthName" class="banner-month-highlight" style="font-size:14px; margin-inline: 4px;">-</strong>
                     <span style="font-size: 11px; opacity:0.8;" id="bannerDaysLogs"></span>
                 </div>
             </div>
@@ -1342,7 +1747,7 @@
                     </div>
                     <div class="advance-warning-text" id="warnAdvanceText">
                         المبلغ المخصوم (<span id="warnAdvanceVal" class="mono-num">0</span> <span class="curr-unit">ج.م</span>) أكبر من إجمالي رصيد السلفة (<span id="warnTotalVal" class="mono-num">0</span> <span class="curr-unit">ج.م</span>).<br>
-                        الرصيد المتبقي سيصبح بالسالب: <strong id="warnRemVal" class="mono-num" style="color:#b91c1c;">-0.00</strong> <span class="curr-unit">ج.م</span> (دائن للموظف). يلزم موافقة واعتماد المدير لتأكيد هذا الإجراء.
+                        الرصيد المتبقي سيصبح بالسالب: <strong id="warnRemVal" class="mono-num danger-highlight">-0.00</strong> <span class="curr-unit">ج.م</span> (دائن للموظف). يلزم موافقة واعتماد المدير لتأكيد هذا الإجراء.
                     </div>
                 </div>
 
@@ -1373,7 +1778,7 @@
                 </div>
 
                 <!-- 2. Attendance, Absence, and Overtime -->
-                <div class="section-label" style="color: #059669;">
+                <div class="section-label section-label-emerald">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                     <span id="secAttendance">2. الحضور والغياب والإضافي</span>
                 </div>
@@ -1413,19 +1818,19 @@
                 </div>
 
                 <!-- 3. Loan Balances and Deductions -->
-                <div class="section-label" style="color: #b45309;">
+                <div class="section-label section-label-amber">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     <span id="secAdvances">3. رصيد السلف والأقساط والاستقطاعات</span>
                 </div>
                 <div class="form-grid-3">
                     <div class="pg-form-group">
                         <label id="lblMTotalAdvance">إجمالي رصيد السلفة للموظف</label>
-                        <input type="number" id="mTotalAdvance" step="0.01" style="background:#fffbeb; color:#b45309; font-weight:800;" oninput="calculateModalLive()">
+                        <input type="number" id="mTotalAdvance" step="0.01" class="input-amber-highlight" oninput="calculateModalLive()">
                         <span class="form-hint" id="lblMTotalAdvanceHint">رصيد السلفة الإجمالي المسجل</span>
                     </div>
                     <div class="pg-form-group">
                         <label id="lblMAdvance">قسط السلفة المخصوم هذا الشهر</label>
-                        <input type="number" id="mAdvance" step="0.01" style="background:#fff1f2; color:#be123c; font-weight:800;" oninput="calculateModalLive()">
+                        <input type="number" id="mAdvance" step="0.01" class="input-rose-highlight" oninput="calculateModalLive()">
                         <span class="form-hint" id="lblMAdvanceHint">القسط المحدد خصمه من الراتب</span>
                     </div>
                     <div class="pg-form-group">
@@ -1465,7 +1870,7 @@
 
                 <!-- Daily biometric punch details table -->
                 <div id="punchesDetailsBox" style="display: none;">
-                    <div class="section-label" style="color: #475569;">
+                    <div class="section-label section-label-slate">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                         <span id="punchesTitle">سجل بصمات الحضور والانصراف اليومية خلال الشهر</span>
                     </div>
@@ -1693,7 +2098,11 @@
                 confirmAdvanceWarningSaveAll: "⚠️ تنبيه مالي هام قبل تثبيت الكشف بالكامل!\n\nيوجد عدد ({count}) موظف تم خصم أقساط سلف أكبر من رصيد سلفهم الإجمالي وسيترحل رصيدهم بالسالب:\n{list}\n\nهل تعتمد وتوافق الإدارة على حفظ الكشف وترحيل هذه الأرصدة بالسالب رسمياً؟",
                 confirmAdvanceWarningPdf: "⚠️ تحذير: قسط السلفة المخصوم ({adv} ج.م) أكبر من إجمالي رصيد السلفة ({tot} ج.م).\nالرصيد المتبقي بالسالب: {rem} ج.م.\nهل تود طباعة التقرير بهذه القيم المعتمدة؟",
                 currency: "ج.م",
-                negativeNote: "(سالب)"
+                negativeNote: "(سالب)",
+                themeDark: "داكن",
+                themeLight: "فاتح",
+                themeToggleTitleDark: "التبديل إلى الوضع الداكن",
+                themeToggleTitleLight: "التبديل إلى الوضع الفاتح"
             },
             en: {
                 appSubtitle: "PayGuard | Smart Payroll & Attendance System",
@@ -1815,9 +2224,110 @@
                 confirmAdvanceWarningSaveAll: "⚠️ Important Financial Warning before saving payroll!\n\nThere are ({count}) employees whose loan deduction exceeds their total loan balance:\n{list}\n\nDoes management approve saving and officially carrying over these negative balances?",
                 confirmAdvanceWarningPdf: "⚠️ Warning: Deducted loan installment ({adv} EGP) exceeds total loan balance ({tot} EGP).\nRemaining balance: {rem} EGP.\nDo you want to print the payslip with these values?",
                 currency: "EGP",
-                negativeNote: "(neg)"
+                negativeNote: "(neg)",
+                themeDark: "Dark",
+                themeLight: "Light",
+                themeToggleTitleDark: "Switch to Dark Mode",
+                themeToggleTitleLight: "Switch to Light Mode"
             }
         };
+
+        function formatMonthLabel(monthInput, lang) {
+            if (!monthInput) return '';
+            const s = String(monthInput).trim();
+            const isAr = (lang === 'ar');
+            const locale = isAr ? 'ar-EG-u-nu-latn' : 'en-US';
+
+            // 1. ISO YYYY-MM
+            const isoMatch = s.match(/^(\d{4})-(\d{1,2})$/);
+            if (isoMatch) {
+                const year = parseInt(isoMatch[1], 10);
+                const month = parseInt(isoMatch[2], 10);
+                const date = new Date(year, month - 1, 1);
+                return new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(date);
+            }
+
+            // 2. Arabic month lookup
+            const arMonths = {
+                "يناير": 1, "فبراير": 2, "مارس": 3, "أبريل": 4, "مايو": 5, "يونيو": 6,
+                "يوليو": 7, "أغسطس": 8, "سبتمبر": 9, "أكتوبر": 10, "نوفمبر": 11, "ديسمبر": 12
+            };
+            for (const [mName, mNum] of Object.entries(arMonths)) {
+                if (s.includes(mName)) {
+                    const yrMatch = s.match(/\d{4}/);
+                    const year = yrMatch ? parseInt(yrMatch[0], 10) : new Date().getFullYear();
+                    const date = new Date(year, mNum - 1, 1);
+                    return new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(date);
+                }
+            }
+
+            // 3. English month lookup
+            const enMonths = {
+                "january": 1, "february": 2, "march": 3, "april": 4, "may": 5, "june": 6,
+                "july": 7, "august": 8, "september": 9, "october": 10, "november": 11, "december": 12
+            };
+            const sLower = s.toLowerCase();
+            for (const [mName, mNum] of Object.entries(enMonths)) {
+                if (sLower.includes(mName)) {
+                    const yrMatch = s.match(/\d{4}/);
+                    const year = yrMatch ? parseInt(yrMatch[0], 10) : new Date().getFullYear();
+                    const date = new Date(year, mNum - 1, 1);
+                    return new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(date);
+                }
+            }
+
+            return s;
+        }
+
+        
+        // Theme preference management: restore from localStorage or system preference
+        let currentTheme = localStorage.getItem('payguard_theme') || 
+            (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+        function applyTheme() {
+            if (currentTheme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            } else {
+                document.documentElement.classList.remove('dark-mode');
+            }
+            updateThemeToggleUI();
+        }
+
+        function updateThemeToggleUI() {
+            const iconEl = document.getElementById('themeBtnIcon');
+            const textEl = document.getElementById('themeBtnText');
+            const btnEl = document.getElementById('themeToggleBtn');
+            if (!btnEl) return;
+            const t = TRANSLATIONS[currentLang] || TRANSLATIONS.ar;
+
+            if (currentTheme === 'dark') {
+                if (iconEl) iconEl.innerText = '☀️';
+                if (textEl) textEl.innerText = t.themeLight;
+                btnEl.title = t.themeToggleTitleLight;
+            } else {
+                if (iconEl) iconEl.innerText = '🌙';
+                if (textEl) textEl.innerText = t.themeDark;
+                btnEl.title = t.themeToggleTitleDark;
+            }
+        }
+
+        function toggleTheme() {
+            currentTheme = (currentTheme === 'dark' ? 'light' : 'dark');
+            try {
+                localStorage.setItem('payguard_theme', currentTheme);
+            } catch(e) {}
+            applyTheme();
+        }
+
+        // Listen for OS theme changes if user hasn't explicitly set preference
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (!localStorage.getItem('payguard_theme')) {
+                    currentTheme = e.matches ? 'dark' : 'light';
+                    applyTheme();
+                }
+            });
+        }
 
         function applyLanguage(lang) {
             currentLang = lang;
@@ -1945,6 +2455,10 @@
             document.getElementById('btnCancelAddEmp').innerText = t.btnCancel;
             document.getElementById('btnSaveAddEmp').innerText = t.btnSaveAddEmp;
 
+            // Re-render history dropdown and banner with new language
+            renderHistoryDropdown();
+            updateArchiveBanner();
+
             // Re-render list & active calculations if open
             if(payrollEmployees && payrollEmployees.length > 0) {
                 renderEmployeeList(payrollEmployees);
@@ -1952,6 +2466,7 @@
             if(activeEditEmpId) {
                 calculateModalLive();
             }
+            updateThemeToggleUI();
         }
 
         function toggleLanguage() {
@@ -1961,6 +2476,7 @@
 
         // Page initialization: load archives and apply language
         document.addEventListener('DOMContentLoaded', () => {
+            applyTheme();
             applyLanguage(currentLang);
             fetchHistoryList(true);
         });
@@ -1970,29 +2486,59 @@
             .then(res => res.json())
             .then(data => {
                 const sheets = data.sheets || [];
+                window.cachedArchivedSheets = sheets;
                 const historyWrap = document.getElementById("historyWrap");
-                const historySelect = document.getElementById("historySelect");
-                const t = TRANSLATIONS[currentLang];
 
                 if(sheets.length > 0) {
                     historyWrap.style.display = "flex";
-                    historySelect.innerHTML = `<option value="">${t.historySelectDefault}</option>`;
-                    sheets.forEach(s => {
-                        const opt = document.createElement("option");
-                        opt.value = s.month_name;
-                        opt.innerText = `${s.month_name} (${s.total_logs} ${currentLang === 'en' ? 'logs' : 'سجل'})`;
-                        historySelect.appendChild(opt);
-                    });
+                    renderHistoryDropdown();
 
                     // Automatically load most recent monthly sheet
                     if(autoLoadLatest && sheets.length > 0) {
-                        loadMonthByName(sheets[0].month_name);
+                        loadMonthByName(sheets[0].month_key || sheets[0].month_name);
                     }
                 } else {
                     historyWrap.style.display = "none";
                 }
             })
-            .catch(err => console.log("الأرشيف فارغ أو قيد الإنشاء:", err));
+            .catch(err => console.log("Archive empty or loading:", err));
+        }
+
+        function renderHistoryDropdown() {
+            const historySelect = document.getElementById("historySelect");
+            if (!historySelect) return;
+            const t = TRANSLATIONS[currentLang];
+            const currentVal = historySelect.value;
+            historySelect.innerHTML = `<option value="">${t.historySelectDefault}</option>`;
+
+            const sheets = window.cachedArchivedSheets || [];
+            sheets.forEach(s => {
+                const opt = document.createElement("option");
+                const val = s.month_key || s.month_name;
+                opt.value = val;
+                const formattedLabel = formatMonthLabel(val, currentLang);
+                const logWord = (currentLang === 'en' ? 'logs' : 'سجل');
+                opt.innerText = `${formattedLabel} (${s.total_logs} ${logWord})`;
+                historySelect.appendChild(opt);
+            });
+
+            if(currentVal) {
+                historySelect.value = currentVal;
+            } else if (currentMonthMeta && (currentMonthMeta.month_key || currentMonthMeta.month_name)) {
+                historySelect.value = currentMonthMeta.month_key || currentMonthMeta.month_name;
+            }
+        }
+
+        function updateArchiveBanner() {
+            if(!currentMonthMeta || (!currentMonthMeta.month_key && !currentMonthMeta.month_name)) return;
+            const banner = document.getElementById("archiveBanner");
+            if (!banner) return;
+            banner.style.display = "flex";
+            const monthId = currentMonthMeta.month_key || currentMonthMeta.month_name;
+            document.getElementById("bannerMonthName").innerText = formatMonthLabel(monthId, currentLang);
+            const daysWord = (currentLang === 'en' ? 'days' : 'يوم');
+            const logsWord = (currentLang === 'en' ? 'logs' : 'سجل');
+            document.getElementById("bannerDaysLogs").innerText = `(${currentMonthMeta.days_in_month || 30} ${daysWord} | ${currentMonthMeta.total_logs || 0} ${logsWord})`;
         }
 
         function onHistoryMonthChange() {
@@ -2011,7 +2557,12 @@
                     return;
                 }
                 renderPayroll(data);
-                document.getElementById("historySelect").value = monthName;
+                const historySelect = document.getElementById("historySelect");
+                const targetVal = data.meta.month_key || data.meta.month_name || monthName;
+                historySelect.value = targetVal;
+                if(!historySelect.value) {
+                    historySelect.value = monthName;
+                }
             })
             .catch(err => alert("Error loading month: " + err));
         }
@@ -2073,11 +2624,8 @@
             currentMonthMeta = data.meta;
             payrollEmployees = data.employees;
 
-            // Display archive banner
-            const banner = document.getElementById("archiveBanner");
-            banner.style.display = "flex";
-            document.getElementById("bannerMonthName").innerText = currentMonthMeta.month_name;
-            document.getElementById("bannerDaysLogs").innerText = `(${currentMonthMeta.days_in_month || 30} ${currentLang === 'en' ? 'days' : 'يوم'} | ${currentMonthMeta.total_logs || 0} ${currentLang === 'en' ? 'logs' : 'سجل'})`;
+            // Display archive banner with dynamic localized month label
+            updateArchiveBanner();
 
             // Hide dropzone and display stats and payroll table
             document.getElementById("step1Card").style.display = "none";
@@ -2259,7 +2807,7 @@
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
                         <td>${d.date}</td>
-                        <td>${d.is_friday ? `<span style="color:#0369a1; font-weight:bold;">${t.fridayYes}</span>` : t.fridayNo}</td>
+                        <td>${d.is_friday ? `<span class="friday-highlight">${t.fridayYes}</span>` : t.fridayNo}</td>
                         <td>${d.check_in}</td>
                         <td>${d.check_out}</td>
                         <td>${d.worked_hours} ${t.hoursUnit}</td>
@@ -2305,14 +2853,10 @@
                 document.getElementById("warnAdvanceVal").innerText = advance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
                 document.getElementById("warnTotalVal").innerText = totalAdvance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
                 document.getElementById("warnRemVal").innerText = remainingAdvance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                remInput.style.backgroundColor = "#fee2e2";
-                remInput.style.color = "#dc2626";
-                remInput.style.borderColor = "#ef4444";
+                remInput.className = "rem-danger";
             } else {
                 warnBox.style.display = "none";
-                remInput.style.backgroundColor = "#f8fafc";
-                remInput.style.color = "#15803d";
-                remInput.style.borderColor = "#86efac";
+                remInput.className = "rem-normal";
             }
 
             const deduction = parseFloat(document.getElementById("mDeduction").value) || 0;
@@ -2488,7 +3032,8 @@
                 alert(t.alertSelectMonthExport);
                 return;
             }
-            window.location.href = `/export_excel?month=${encodeURIComponent(currentMonthMeta.month_name || "الشهر")}&lang=${currentLang}`;
+            const monthId = currentMonthMeta.month_key || currentMonthMeta.month_name || "الشهر";
+            window.location.href = `/export_excel?month=${encodeURIComponent(monthId)}&lang=${currentLang}`;
         }
 
         function startNewMonth() {
@@ -2523,12 +3068,14 @@
             }
 
             const factor = parseFloat(document.getElementById("fridayFactorInput").value) || 2.0;
+            const monthId = currentMonthMeta.month_key || currentMonthMeta.month_name;
 
             fetch("/save_all", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     month_name: currentMonthMeta.month_name,
+                    month_key: currentMonthMeta.month_key,
                     employees: payrollEmployees,
                     friday_factor: factor
                 })
@@ -2539,7 +3086,8 @@
                     alert("Error: " + data.error);
                     return;
                 }
-                showToast(t.toastSaveAllSuccess.replace('{month}', currentMonthMeta.month_name).replace('{count}', data.count));
+                const localizedMonth = formatMonthLabel(monthId, currentLang);
+                showToast(t.toastSaveAllSuccess.replace('{month}', localizedMonth).replace('{count}', data.count));
                 fetchHistoryList(false);
             })
             .catch(err => alert("Error: " + err));
@@ -2597,13 +3145,14 @@
             emp.net_salary = Math.max(0, basePay + fridayExtra + overtimePay + emp.bonus - emp.advance - emp.deduction);
 
             showToast(t.toastPdfGenerating.replace('{name}', emp.name));
+            const monthId = currentMonthMeta.month_key || currentMonthMeta.month_name;
 
             fetch("/export_employee_pdf", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     emp_id: emp.emp_id,
-                    month_name: currentMonthMeta.month_name,
+                    month_name: monthId,
                     emp: emp,
                     friday_factor: factor,
                     lang: currentLang
@@ -2630,13 +3179,14 @@
 
             showToast(t.toastPdfGenerating.replace('{name}', emp.name));
             const factor = parseFloat(document.getElementById("fridayFactorInput").value) || 2.0;
+            const monthId = currentMonthMeta.month_key || currentMonthMeta.month_name;
 
             fetch("/export_employee_pdf", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     emp_id: emp.emp_id,
-                    month_name: currentMonthMeta.month_name,
+                    month_name: monthId,
                     emp: emp,
                     friday_factor: factor,
                     lang: currentLang
@@ -2658,7 +3208,7 @@
         // Preview and print payslip in dedicated window
         function previewActiveEmployeeSlip() {
             if(!activeEditEmpId) return;
-            const month = encodeURIComponent(currentMonthMeta.month_name || "الشهر");
+            const month = encodeURIComponent(currentMonthMeta.month_key || currentMonthMeta.month_name || "الشهر");
             window.open(`/employee_slip/${activeEditEmpId}?month=${month}&lang=${currentLang}`, '_blank', 'width=920,height=980,scrollbars=yes');
         }
 

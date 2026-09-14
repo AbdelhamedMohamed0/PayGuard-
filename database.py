@@ -85,6 +85,7 @@ def init_db():
     c.execute('''
         CREATE TABLE IF NOT EXISTS monthly_sheets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            month_key TEXT,
             month_name TEXT UNIQUE,
             year INTEGER,
             month INTEGER,
@@ -96,6 +97,25 @@ def init_db():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
+
+    try:
+        c.execute("ALTER TABLE monthly_sheets ADD COLUMN month_key TEXT")
+    except:
+        pass
+
+    try:
+        c.execute("ALTER TABLE employee_payroll_records ADD COLUMN month_key TEXT")
+    except:
+        pass
+
+    try:
+        c.execute('''
+            UPDATE monthly_sheets 
+            SET month_key = printf('%04d-%02d', year, month)
+            WHERE (month_key IS NULL OR month_key = '') AND year IS NOT NULL AND month IS NOT NULL
+        ''')
+    except:
+        pass
 
     # 3. Monthly employee payroll records table
     c.execute('''
@@ -173,40 +193,53 @@ def save_or_update_employee(emp_id, name, basic_salary, work_hours=10.0, total_a
     conn.commit()
     conn.close()
 
-def save_monthly_sheet(month_name, year, month, days_in_month, total_logs, start_date, end_date, friday_factor=2.0):
+def save_monthly_sheet(month_name, year, month, days_in_month, total_logs, start_date, end_date, friday_factor=2.0, month_key=None):
+    if not month_key and year and month:
+        month_key = f"{int(year):04d}-{int(month):02d}"
     conn = get_connection()
     c = conn.cursor()
     c.execute('''
-        INSERT INTO monthly_sheets (month_name, year, month, days_in_month, total_logs, start_date, end_date, friday_factor)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO monthly_sheets (month_key, month_name, year, month, days_in_month, total_logs, start_date, end_date, friday_factor)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(month_name) DO UPDATE SET
+            month_key = COALESCE(excluded.month_key, monthly_sheets.month_key),
             days_in_month = excluded.days_in_month,
             total_logs = excluded.total_logs,
             start_date = excluded.start_date,
             end_date = excluded.end_date,
             friday_factor = excluded.friday_factor
-    ''', (month_name, year, month, days_in_month, total_logs, start_date, end_date, friday_factor))
+    ''', (month_key, month_name, year, month, days_in_month, total_logs, start_date, end_date, friday_factor))
     sheet_id = c.lastrowid
     conn.commit()
     conn.close()
     return sheet_id
 
 def get_all_monthly_sheets():
-    """Retrieve list of all archived monthly sheets."""
+    """Retrieve list of all archived monthly sheets with canonical month_key."""
     conn = get_connection()
     c = conn.cursor()
     c.execute("SELECT * FROM monthly_sheets ORDER BY id DESC")
-    rows = [dict(r) for r in c.fetchall()]
+    rows = []
+    for r in c.fetchall():
+        d = dict(r)
+        if not d.get("month_key") and d.get("year") and d.get("month"):
+            d["month_key"] = f"{int(d['year']):04d}-{int(d['month']):02d}"
+        rows.append(d)
     conn.close()
     return rows
 
 def get_monthly_sheet_by_name(month_name):
     conn = get_connection()
     c = conn.cursor()
-    c.execute("SELECT * FROM monthly_sheets WHERE month_name = ?", (month_name,))
+    c.execute("SELECT * FROM monthly_sheets WHERE month_key = ? OR month_name = ?", (str(month_name), str(month_name)))
     row = c.fetchone()
     conn.close()
-    return dict(row) if row else None
+    if row:
+        d = dict(row)
+        if not d.get("month_key") and d.get("year") and d.get("month"):
+            d["month_key"] = f"{int(d['year']):04d}-{int(d['month']):02d}"
+        return d
+    return None
 
 def save_payroll_record(rec):
     conn = get_connection()
@@ -216,20 +249,23 @@ def save_payroll_record(rec):
         rec["total_advance"] = 0.0
     if "remaining_advance" not in rec:
         rec["remaining_advance"] = max(0.0, float(rec["total_advance"]) - float(rec.get("advance", 0.0)))
+    if "month_key" not in rec:
+        rec["month_key"] = None
 
     c.execute('''
         INSERT INTO employee_payroll_records (
-            month_name, emp_id, name, basic_salary, work_hours,
+            month_key, month_name, emp_id, name, basic_salary, work_hours,
             day_rate, hour_rate, attended_days, vacation_days,
             friday_days, absence_days, overtime_hours, overtime_amount,
             friday_extra_amount, bonus, total_advance, advance, remaining_advance, deduction, net_salary, notes, updated_at
         ) VALUES (
-            :month_name, :emp_id, :name, :basic_salary, :work_hours,
+            :month_key, :month_name, :emp_id, :name, :basic_salary, :work_hours,
             :day_rate, :hour_rate, :attended_days, :vacation_days,
             :friday_days, :absence_days, :overtime_hours, :overtime_amount,
             :friday_extra_amount, :bonus, :total_advance, :advance, :remaining_advance, :deduction, :net_salary, :notes, CURRENT_TIMESTAMP
         )
         ON CONFLICT(month_name, emp_id) DO UPDATE SET
+            month_key = COALESCE(excluded.month_key, employee_payroll_records.month_key),
             name = excluded.name,
             basic_salary = excluded.basic_salary,
             work_hours = excluded.work_hours,
@@ -266,7 +302,13 @@ def save_payroll_record(rec):
 def get_saved_payroll_by_month(month_name):
     conn = get_connection()
     c = conn.cursor()
-    c.execute("SELECT * FROM employee_payroll_records WHERE month_name = ? ORDER BY name ASC", (month_name,))
+    c.execute('''
+        SELECT * FROM employee_payroll_records 
+        WHERE month_name = ? 
+           OR month_key = ? 
+           OR sheet_id = (SELECT id FROM monthly_sheets WHERE month_key = ? OR month_name = ?)
+        ORDER BY name ASC
+    ''', (str(month_name), str(month_name), str(month_name), str(month_name)))
     rows = [dict(r) for r in c.fetchall()]
     conn.close()
     return rows
@@ -274,8 +316,13 @@ def get_saved_payroll_by_month(month_name):
 def delete_monthly_sheet(month_name):
     conn = get_connection()
     c = conn.cursor()
-    c.execute("DELETE FROM employee_payroll_records WHERE month_name = ?", (month_name,))
-    c.execute("DELETE FROM monthly_sheets WHERE month_name = ?", (month_name,))
+    c.execute('''
+        DELETE FROM employee_payroll_records 
+        WHERE month_name = ? 
+           OR month_key = ? 
+           OR sheet_id = (SELECT id FROM monthly_sheets WHERE month_key = ? OR month_name = ?)
+    ''', (str(month_name), str(month_name), str(month_name), str(month_name)))
+    c.execute("DELETE FROM monthly_sheets WHERE month_key = ? OR month_name = ?", (str(month_name), str(month_name)))
     conn.commit()
     conn.close()
 
