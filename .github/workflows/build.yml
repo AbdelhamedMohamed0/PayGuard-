@@ -88,20 +88,12 @@ jobs:
         run: |
           pyinstaller --noconfirm --clean PayGuard.spec
 
-      - name: Force Embed Windows Icon with rcedit
-        if: matrix.platform == 'windows'
-        shell: pwsh
-        run: |
-          curl.exe -L -o rcedit.exe https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe
-          .\rcedit.exe "dist/PayGuard.exe" --set-icon "assets/icons/icon.ico"
-          Remove-Item rcedit.exe -Force
-
-      - name: Verify Embedded Windows Icon Resource
+      - name: Verify Embedded Windows Icon Resource & Binary Payload
         if: matrix.platform == 'windows'
         shell: pwsh
         run: |
           pip install pefile
-          python -c "import pefile; pe = pefile.PE('dist/PayGuard.exe'); has_icon_resource = False; entries = getattr(pe, 'DIRECTORY_ENTRY_RESOURCE', None); entries = entries.entries if entries else []; has_icon_resource = any(entry.name is None and entry.id in (3, 14) for entry in entries); print('Has icon resource embedded:', has_icon_resource); assert has_icon_resource, 'NO ICON RESOURCE FOUND IN BUILT EXE'"
+          python -c "import pefile, os; pe = pefile.PE('dist/PayGuard.exe'); has_icon_resource = hasattr(pe, 'DIRECTORY_ENTRY_RESOURCE') and any(e.name is None and e.id in (3, 14) for e in pe.DIRECTORY_ENTRY_RESOURCE.entries); print('Has icon resource embedded:', has_icon_resource); assert has_icon_resource, 'NO ICON RESOURCE FOUND IN BUILT EXE'; sz = os.path.getsize('dist/PayGuard.exe'); print(f'Binary size: {sz} bytes'); assert sz > 5000000, f'EXE size {sz} is too small, payload missing!'"
 
       # Prepare distribution packages per platform
       - name: Package Windows Binary

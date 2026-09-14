@@ -27,8 +27,11 @@ a = Analysis(
 )
 pyz = PYZ(a.pure)
 
-print(f"[ICON DEBUG] Resolved Windows icon path: {win_icon}")
-print(f"[ICON DEBUG] Path exists: {os.path.exists(win_icon)}")
+try:
+    print(f"[ICON DEBUG] Resolved Windows icon path: {win_icon}".encode('ascii', errors='backslashreplace').decode('ascii'))
+    print(f"[ICON DEBUG] Path exists: {os.path.exists(win_icon)}")
+except Exception:
+    pass
 
 exe = EXE(
     pyz,
