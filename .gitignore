@@ -10,16 +10,18 @@ build/
 dist/
 *.patched.spec
 
-# Local SQLite databases
+# Local SQLite databases & sensitive data
 *.db
 *.sqlite3
+شهر.txt
+*_real*.txt
+/data/
+/النسخة_المشفرة_للعميل/
+sample_data/*_real*
 
 # Temporary exported reports & test files
 test_export*.xlsx
 تقارير_الموظفين_PDF/
-
-# Distribution executable folder (binary artifacts)
-النسخة_المشفرة_للعميل/*.exe
 
 # Environment & IDE
 .env
