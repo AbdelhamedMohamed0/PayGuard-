@@ -12,14 +12,38 @@ from datetime import datetime
 
 def get_app_data_dir():
     """
-    الحصول على المسار الدائم بجوار ملف الـ EXE أو ملف السكربت
-    لمنع حفظ قاعدة البيانات في مجلد Temp عند تشغيل PyInstaller
+    الحصول على المسار المناسب لحفظ قاعدة البيانات والتقارير عبر المنصات المختلفة (Windows, macOS, Linux)
+    مع مراعاة حزم التطبيقات المقفلة والأذونات.
     """
     if getattr(sys, 'frozen', False):
-        # في حالة تشغيل ملف EXE مجمع بـ PyInstaller
-        return os.path.dirname(sys.executable)
+        exe_dir = os.path.dirname(sys.executable)
+        
+        # في نظام macOS داخل حزمة .app يكون المسار للقراءة فقط (Contents/MacOS)
+        if sys.platform == "darwin" and "Contents/MacOS" in exe_dir:
+            user_data = os.path.expanduser("~/Library/Application Support/PayGuard")
+            os.makedirs(user_data, exist_ok=True)
+            return user_data
+            
+        # فحص إمكانية الكتابة بجوار الملف التنفيذي
+        try:
+            test_file = os.path.join(exe_dir, ".pg_write_test")
+            with open(test_file, "w") as f:
+                f.write("ok")
+            os.remove(test_file)
+            return exe_dir
+        except Exception:
+            # مسار المستخدم الافتراضي لكل منصة عند تعذر الكتابة المباشرة
+            if sys.platform == "win32":
+                base = os.getenv("APPDATA", os.path.expanduser("~"))
+                user_data = os.path.join(base, "PayGuard")
+            elif sys.platform == "darwin":
+                user_data = os.path.expanduser("~/Library/Application Support/PayGuard")
+            else:
+                user_data = os.path.expanduser("~/.local/share/PayGuard")
+            os.makedirs(user_data, exist_ok=True)
+            return user_data
     else:
-        # في حالة تشغيل السكربت العادي
+        # في بيئة التطوير العادية
         return os.path.dirname(os.path.abspath(__file__))
 
 BASE_DIR = get_app_data_dir()

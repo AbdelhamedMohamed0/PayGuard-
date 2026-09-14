@@ -77,9 +77,12 @@ PayGuard/
 ├── test_payroll.py            # حزمة الاختبارات الآلية الشاملة
 ├── templates/
 │   └── index.html             # واجهة المستخدم العصرية (PayGuard Enterprise SPA)
+├── .github/
+│   └── workflows/
+│       └── build.yml          # مسار البناء التلقائي عبر GitHub Actions (Win/Mac/Linux)
 ├── build_exe.bat              # سكريبت أتمتة التشفير وبناء ملف EXE للعميل
 ├── run_app.bat                # سكريبت تشغيل التطبيق في وضع التطوير
-├── PayGuard.spec              # إعدادات حزم PyInstaller
+├── PayGuard.spec              # إعدادات حزم PyInstaller العابرة للمنصات
 ├── requirements.txt           # متطلبات ومكتبات بايثون
 ├── شهر.txt                    # ملف بصمة تجريبي متكامل
 ├── .gitignore                 # استثناء مخلفات البناء وقواعد البيانات
@@ -88,34 +91,70 @@ PayGuard/
 
 ---
 
-## 🚀 Getting Started / طريقة التشغيل
+## 📥 تنزيل الإصدارات الجاهزة (Download Ready Releases)
 
-### 1. وضع المطور (Development Mode)
+يمكن للمستخدم النهائي تحميل أحدث إصدار تنفيذي جاهز للعمل مباشرة من صفحة **[Releases](../../releases)**:
+
+| المنصة (OS) | الملف القابل للتحميل | طريقة التشغيل |
+|---|---|---|
+| **Windows (x64)** | `PayGuard-Windows-x64.exe` | تشغيل مباشر (Portable) بدون تثبيت |
+| **macOS (Intel & Apple Silicon)** | `PayGuard-macOS-Universal.zip` | فك الضغط ثم فتح `PayGuard.app` |
+| **Linux (All Distros)** | `PayGuard-Linux-x86_64.AppImage` | إعطاء صلاحية تشغيل (`chmod +x`) ثم تشغيل مباشر |
+
+> ### 🍎 ملاحظة لمستخدمي macOS (Apple Gatekeeper):
+> نظراً لأن التطبيق غير موقّع رسمياً بشهادة Apple Developer مدفوعة، سيظهر لك نظام macOS تنبيهاً يفيد بأن التطبيق من مطور غير معروف (Unidentified Developer) عند الفتح لأول مرة:
+> 1. بعد فك الضغط، اضغط بالزر الأيمن (Right-click) على `PayGuard.app` واختر **Open** ثم اضغط **Open** في النافذة.
+> 2. أو توجه إلى: **System Settings → Privacy & Security** واضغط على زر **Open Anyway**.
+
+---
+
+## 🚀 طريقة التشغيل والبناء محلياً (Local Build for Developers)
+
+### 1. وضع التطوير السريع (Development Mode)
 ```bash
-# تثبيت المتطلبات
+# تثبيت المكتبات والمتطلبات
 pip install -r requirements.txt
 
-# تشغيل الاختبارات الآلية
+# تشغيل الاختبارات الآلية للتأكد من سلامة النظام
 python test_payroll.py
 
-# تشغيل التطبيق
+# تشغيل التطبيق محلياً
 python app.py
-# أو عبر النقر المزدوج على run_app.bat
 ```
 
-### 2. بناء ملف التشغيل المشفر للعميل (Build Standalone EXE)
+### 2. البناء المحلي كملف تنفيذي (Build Locally)
+
+#### على ويندوز (Windows):
 ```bash
-# بناء وتشفير ملف PayGuard.exe
 build_exe.bat
+# أو مباشرة:
+pyinstaller --noconfirm PayGuard.spec
 ```
-سيتم إنشاء ملف `PayGuard.exe` محمي ومشفر 100% ووضعه داخل مجلد:
-```text
-النسخة_المشفرة_للعميل\PayGuard.exe
+
+#### على ماك (macOS):
+```bash
+pyinstaller --noconfirm PayGuard.spec
+# سيتم إنشاء حزمة PayGuard.app داخل مجلد dist/
 ```
+
+#### على لينكس (Linux):
+```bash
+sudo apt-get install -y libgtk-3-dev libgirepository1.0-dev gir1.2-webkit2-4.0
+pyinstaller --noconfirm PayGuard.spec
+# سيتم إنشاء ملف PayGuard داخل مجلد dist/
+```
+
+---
+
+## 🔄 نظام البناء التلقائي (CI/CD via GitHub Actions)
+
+يتضمن المشروع ملف سير عمل تلقائي داخل `.github/workflows/build.yml`:
+- **البناء التلقائي عند إطلاق إصدار:** بمجرد عمل `git tag v1.0.0` وعمل `git push origin v1.0.0`، يقوم سير العمل تلقائياً ببناء واختبار حزم Windows و macOS و Linux ورفعها كمرفقات داخل صفحة Releases.
+- **التشغيل اليدوي (Manual Dispatch):** يمكنك تجربة البناء في أي وقت بالضغط على **Run workflow** من تبويب **Actions** في GitHub.
 
 ---
 
 ## 🛡️ Security & Licensing
 
-- **Code Protection:** All business logic files (`app.py`, `database.py`, `zkteco_parser.py`, `payroll_engine.py`, `exporter.py`, `pdf_generator.py`) are hardened and obfuscated with **PyArmor 9+**.
+- **Code Protection:** All business logic files (`app.py`, `database.py`, `zkteco_parser.py`, `payroll_engine.py`, `exporter.py`, `pdf_generator.py`) are hardened and obfuscated with **PyArmor**.
 - **Developer:** Abdelhamed Mohamed

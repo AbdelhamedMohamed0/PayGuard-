@@ -1,11 +1,13 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import sys
+
 a = Analysis(
     ['app.py'],
     pathex=[],
     binaries=[],
     datas=[('templates', 'templates')],
-    hiddenimports=[],
+    hiddenimports=['jinja2', 'openpyxl'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -25,7 +27,7 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    upx=True if sys.platform == 'win32' else False,
     upx_exclude=[],
     runtime_tmpdir=None,
     console=False,
@@ -35,3 +37,18 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
 )
+
+if sys.platform == 'darwin':
+    app = BUNDLE(
+        exe,
+        name='PayGuard.app',
+        icon=None,
+        bundle_identifier='com.payguard.payroll',
+        info_plist={
+            'NSHighResolutionCapable': 'True',
+            'CFBundleShortVersionString': '2.0.0',
+            'CFBundleVersion': '2.0.0',
+            'NSRequiresAquaSystemAppearance': 'False'
+        }
+    )
+

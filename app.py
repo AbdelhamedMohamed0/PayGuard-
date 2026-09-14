@@ -443,11 +443,16 @@ def download_employee_pdf_endpoint():
 
 @app.route('/open_pdf_folder')
 def open_pdf_folder_endpoint():
-    """فتح مجلد تقارير الـ PDF في مستكشف ويندوز"""
+    """فتح مجلد تقارير الـ PDF في مستكشف ويندوز أو ماك أو لينكس"""
+    import subprocess
     folder = os.path.join(database.BASE_DIR, "تقارير_الموظفين_PDF")
     os.makedirs(folder, exist_ok=True)
     if os.name == 'nt':
         os.startfile(folder)
+    elif sys.platform == 'darwin':
+        subprocess.run(['open', folder])
+    else:
+        subprocess.run(['xdg-open', folder])
     return jsonify({"status": "success", "folder": folder})
 
 

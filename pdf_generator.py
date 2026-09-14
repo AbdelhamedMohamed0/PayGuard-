@@ -5,6 +5,7 @@ pdf_generator.py - وحدة إنشاء تقارير PDF الفردية لمفر�
 """
 
 import os
+import sys
 import re
 import shutil
 import tempfile
@@ -12,17 +13,38 @@ import subprocess
 from datetime import datetime
 
 def find_system_browser():
-    """البحث عن متصفح Microsoft Edge أو Google Chrome على نظام ويندوز للطباعة بدون رأس وتذييل"""
+    """البحث عن متصفح Chromium / Chrome / Edge على أنظمة ويندوز وماك ولينكس للطباعة الصامتة إلى PDF"""
     candidates = [
+        # Windows
         r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
         r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
         r"C:\Program Files\Google\Chrome\Application\chrome.exe",
         r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+        # macOS
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+        "/Applications/Chromium.app/Contents/MacOS/Chromium",
+        "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
+        # Linux
+        "/usr/bin/google-chrome",
+        "/usr/bin/google-chrome-stable",
+        "/usr/bin/chromium",
+        "/usr/bin/chromium-browser",
+        "/usr/bin/microsoft-edge",
+        "/usr/bin/microsoft-edge-stable",
+        "/snap/bin/chromium",
+        # System PATH lookups
         shutil.which("msedge"),
-        shutil.which("chrome")
+        shutil.which("chrome"),
+        shutil.which("google-chrome"),
+        shutil.which("google-chrome-stable"),
+        shutil.which("chromium"),
+        shutil.which("chromium-browser"),
+        shutil.which("microsoft-edge"),
+        shutil.which("brave-browser")
     ]
     for c in candidates:
-        if c and os.path.isfile(c):
+        if c and os.path.isfile(c) and os.access(c, os.X_OK if sys.platform != 'win32' else os.R_OK):
             return c
     return None
 
