@@ -86,7 +86,22 @@ jobs:
       - name: Build Executable with PyInstaller (Standard Mode)
         if: ${{ !(github.event.inputs.use_pyarmor == true || github.event.inputs.use_pyarmor == 'true') }}
         run: |
-          pyinstaller --noconfirm PayGuard.spec
+          pyinstaller --noconfirm --clean PayGuard.spec
+
+      - name: Force Embed Windows Icon with rcedit
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: |
+          curl.exe -L -o rcedit.exe https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe
+          .\rcedit.exe "dist/PayGuard.exe" --set-icon "assets/icons/icon.ico"
+          Remove-Item rcedit.exe -Force
+
+      - name: Verify Embedded Windows Icon Resource
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: |
+          pip install pefile
+          python -c "import pefile; pe = pefile.PE('dist/PayGuard.exe'); has_icon_resource = False; entries = getattr(pe, 'DIRECTORY_ENTRY_RESOURCE', None); entries = entries.entries if entries else []; has_icon_resource = any(entry.name is None and entry.id in (3, 14) for entry in entries); print('Has icon resource embedded:', has_icon_resource); assert has_icon_resource, 'NO ICON RESOURCE FOUND IN BUILT EXE'"
 
       # Prepare distribution packages per platform
       - name: Package Windows Binary

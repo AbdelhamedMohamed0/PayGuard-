@@ -473,9 +473,33 @@ def open_pdf_folder_endpoint():
     return jsonify({"status": "success", "folder": folder})
 
 
+def get_app_icon_path():
+    """Resolve icon path for GUI window across dev and frozen environments."""
+    if getattr(sys, 'frozen', False):
+        base = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    else:
+        base = os.path.dirname(os.path.abspath(__file__))
+
+    ico = os.path.join(base, 'assets', 'icons', 'icon.ico')
+    png = os.path.join(base, 'assets', 'icons', 'icon_256.png')
+    if os.path.exists(ico):
+        return ico
+    if os.path.exists(png):
+        return png
+    return None
+
+
 def start_gui():
     """Launch desktop application with native webview GUI window."""
     database.init_db()
+
+    # Set explicit AppUserModelID on Windows for dedicated taskbar grouping and icon
+    if sys.platform == 'win32':
+        try:
+            import ctypes
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('com.payguard.payroll')
+        except Exception:
+            pass
 
     try:
         import webview
@@ -490,7 +514,8 @@ def start_gui():
             resizable=True,
             min_size=(980, 680)
         )
-        webview.start()
+        app_icon = get_app_icon_path()
+        webview.start(icon=app_icon)
     except Exception as e:
         import webbrowser
         print(f"Opening PayGuard in default browser: {e}")

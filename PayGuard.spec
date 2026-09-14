@@ -27,6 +27,9 @@ a = Analysis(
 )
 pyz = PYZ(a.pure)
 
+print(f"[ICON DEBUG] Resolved Windows icon path: {win_icon}")
+print(f"[ICON DEBUG] Path exists: {os.path.exists(win_icon)}")
+
 exe = EXE(
     pyz,
     a.scripts,
